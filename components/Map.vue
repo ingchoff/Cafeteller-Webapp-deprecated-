@@ -1,5 +1,5 @@
 <template>
-  <gmap-map ref="gmap" :center="center" :zoom="16">
+  <gmap-map id="myMap" ref="gmap" :center="center" :zoom="16">
     <gmap-marker
       v-for="(m, index) in markers"
       :key="index"
@@ -118,4 +118,8 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+#myMap {
+  border-radius: 50px;
+}
+</style>

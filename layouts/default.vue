@@ -1,7 +1,7 @@
 <template>
   <div>
     <Header />
-    <main class="container">
+    <main class="main-content">
       <nuxt />
     </main>
     <Footer />
@@ -25,6 +25,6 @@ export default {
 }
 
 .main-content {
-  margin-top: 177px;
+  margin-top: 200px;
 }
 </style>

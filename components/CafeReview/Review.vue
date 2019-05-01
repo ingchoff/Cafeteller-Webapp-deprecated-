@@ -1,6 +1,16 @@
 <template>
-  <nuxt-link to="id">
-    <div class="post-preview">
+  <div class="card">
+    <div style="overflow:hidden;">
+      <nuxt-link to="id">
+        <div class="img" :style="{ backgroundImage: 'url(' + img + ')' }" />
+      </nuxt-link>
+    </div>
+    <div class="card-body">
+      <p class="card-text font-weight-bold">{{ title }}</p>
+      <p class="card-text ">{{ excerpt }}</p>
+    </div>
+  </div>
+  <!-- <div class="post-preview">
       <div
         :style="{ backgroudImage: 'url(' + thumbnailImage + ')' }"
         class="post-preview-thumbnail"
@@ -9,8 +19,8 @@
         <h1>{{ title }}</h1>
         <p>{{ excerpt }}</p>
       </div>
-    </div>
-  </nuxt-link>
+    </div> -->
+  <!-- </nuxt-link> -->
 </template>
 
 <script>
@@ -24,7 +34,7 @@ export default {
       type: String,
       required: true
     },
-    thumbnailImage: {
+    img: {
       type: String,
       required: true
     },
@@ -42,30 +52,34 @@ a {
   color: black;
 }
 
-.post-preview {
-  border-radius: 3px;
-  box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.5);
-  width: 100%;
-  margin: 1rem auto;
-  height: 20rem;
+.card {
+  margin: 0 20px 10px 20px;
+  border: none;
+  width: 320px;
+  height: 376px;
+  background-color: #333;
+  /* overflow: hidden; */
 }
 
-.post-preview-thumbnail {
-  background-position: center;
-  width: 100%;
-  height: 10rem;
-  background-size: cover;
+.img {
+  width: 320px;
+  height: 376px;
+  transition: all 0.3s ease-in-out;
 }
 
-.post-preview-content {
+.img:hover {
+  transform: scale(1.1);
+  filter: alpha(opacity=0.5);
+  opacity: 0.5;
+}
+
+.card-body {
+  padding: 0;
+  background: #fffaf0;
+}
+
+.card-text {
+  margin: 0;
   text-align: center;
-  padding: 1rem;
-}
-
-@media (min-width: 35rem) {
-  .post-preview {
-    width: 25rem;
-    margin-right: 1rem;
-  }
 }
 </style>
