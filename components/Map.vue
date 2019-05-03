@@ -1,11 +1,6 @@
 <template>
-  <gmap-map id="myMap" ref="gmap" :center="center" :zoom="16">
-    <gmap-marker
-      v-for="(m, index) in markers"
-      :key="index"
-      :position="m.position"
-      @click="toggleInfoWindow(m, index)"
-    >
+  <gmap-map id="myMap" ref="gmap" :center="storePos" :zoom="16">
+    <gmap-marker :position="storePos" @click="toggleInfoWindow(storePos)">
     </gmap-marker>
 
     <gmap-info-window
@@ -21,6 +16,16 @@
 
 <script>
 export default {
+  props: {
+    storePos: {
+      type: Object,
+      required: true
+    },
+    storeName: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
       // center: { lat: -3.350235, lng: 111.995865 },
@@ -44,24 +49,7 @@ export default {
           width: 0,
           height: -35
         }
-      },
-      markers: [
-        {
-          name: 'Cafe 1',
-          style: 'style 1',
-          position: { lat: 13.723418599999999, lng: 100.4762319 }
-        },
-        {
-          name: 'Cafe 2',
-          style: 'style 2',
-          position: { lat: 13.723418599999999, lng: 100.4862319 }
-        },
-        {
-          name: 'Cafe 3',
-          style: 'style 3',
-          position: { lat: 13.723418599999999, lng: 100.4662329 }
-        }
-      ]
+      }
     }
   },
   mounted() {
@@ -69,47 +57,43 @@ export default {
     // set bounds of the map
     this.$refs.gmap.$mapPromise.then(map => {
       // eslint-disable-next-line no-undef
+      map.panTo(this.storePos)
       // const bounds = new google.maps.LatLngBounds()
       // for (const m of this.markers) {
       //   bounds.extend(m.position)
       // }
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-          map.panTo({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          })
-        })
-      }
+      // map.fitBounds(bounds)
+      // if (navigator.geolocation) {
+      //   navigator.geolocation.getCurrentPosition(function(position) {
+      //     map.panTo({
+      //       lat: position.coords.latitude,
+      //       lng: position.coords.longitude
+      //     })
+      //   })
+      // }
     })
   },
   methods: {
-    toggleInfoWindow: function(marker, idx) {
+    toggleInfoWindow: function(position) {
       // this.center = marker.position
-      this.infoWindowPos = marker.position
-      this.infoContent = this.getInfoWindowContent(marker)
+      this.infoWindowPos = position
+      this.infoContent = this.getInfoWindowContent(this.storeName)
 
       // check if its the same marker that was selected if yes toggle
-      if (this.currentMidx === idx) {
-        this.infoWinOpen = !this.infoWinOpen
-      }
+      // if (this.currentMidx === idx) {
+      this.infoWinOpen = !this.infoWinOpen
       // if different marker set infowindow to open and reset current marker index
-      else {
-        this.infoWinOpen = true
-        this.currentMidx = idx
-      }
+      // else {
+      // this.infoWinOpen = true
+      // this.currentMidx = idx
     },
-    getInfoWindowContent: function(marker) {
+    getInfoWindowContent: function(name) {
       return `
   <div class="card-content text-center">
     <div class="media">
       <div class="media-content">
-        <p class="title is-4 font-weight-bold">${marker.name}</p>
+        <p class="title is-4 font-weight-bold">${name}</p>
       </div>
-    </div>
-    <div class="content">
-      ${marker.style}
-      <br>
     </div>
   </div>
 `

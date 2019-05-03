@@ -2,12 +2,11 @@
   <div class="container">
     <div class="row">
       <Review
-        v-for="post in posts"
-        :id="post.id"
-        :key="post.id"
-        :title="post.name"
-        :excerpt="post.place"
-        :img="post.thumbnailUrl"
+        v-for="review in cafereviews"
+        :id="review.id"
+        :key="review.id"
+        :title="review.title"
+        :excerpt="review.content"
       />
     </div>
     <br /><br /><br /><br /><br />
@@ -20,37 +19,13 @@ export default {
   components: {
     Review
   },
-  data() {
+  async asyncData({ params, $axios }) {
+    const cafereviews = await $axios.get(
+      `${$axios.defaults.baseURL}api/v1/reviews/`
+    )
     return {
-      posts: [
-        {
-          name: 'Brave Roasters : Space Oddity',
-          place: 'Seen Space Thonglor 13',
-          thumbnailUrl:
-            'https://static.wixstatic.com/media/03d7e2_2449f64a10564eebb4dab2af2f8ccfa9~mv2.jpg/v1/fill/w_400,h_408,al_c,q_80,usm_0.66_1.00_0.01/03d7e2_2449f64a10564eebb4dab2af2f8ccfa9~mv2.webp',
-          id: 'a-new-beginning'
-        },
-        {
-          name: 'Simple Coffee, Simple Life',
-          place: 'Rama 9 Soi 45',
-          thumbnailUrl:
-            'https://static.wixstatic.com/media/03d7e2_4b9cbfda883544cf9ca152d0f6416c08~mv2.jpg/v1/fill/w_400,h_408,al_c,q_80,usm_0.66_1.00_0.01/03d7e2_4b9cbfda883544cf9ca152d0f6416c08~mv2.webp',
-          id: 'a-new-beginning'
-        },
-        {
-          name: 'Brave Roasters : Space Oddity',
-          place: 'Seen Space Thonglor 13',
-          thumbnailUrl:
-            'https://static.wixstatic.com/media/03d7e2_e5e88c7672a24acaa71fe4e25e7fba2b~mv2_d_1333_2000_s_2.jpg/v1/fill/w_400,h_408,al_c,q_80,usm_0.66_1.00_0.01/03d7e2_e5e88c7672a24acaa71fe4e25e7fba2b~mv2_d_1333_2000_s_2.webp',
-          id: 'a-new-beginning'
-        },
-        {
-          name: 'Sundays',
-          place: 'Thonglor',
-          thumbnailUrl: 'https://www.w3schools.com/w3css/img_lights.jpg',
-          id: 'a-new-beginning'
-        }
-      ]
+      cafereviews: cafereviews.data,
+      project: 'project'
     }
   }
 }
@@ -64,7 +39,7 @@ export default {
   }
 }
 
-@media (max-width: 992px) {
+@media (min-width: 992px) and (max-width: 1199px) {
   .container {
     max-width: 720px;
   }
@@ -73,7 +48,7 @@ export default {
   }
 }
 
-@media (max-width: 576px) {
+@media (min-width: 576px) and (max-width: 768px) {
   .container {
     max-width: 540px;
   }

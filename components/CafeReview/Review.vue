@@ -1,8 +1,9 @@
 <template>
   <div class="card">
     <div style="overflow:hidden;">
-      <nuxt-link to="id">
+      <nuxt-link :to="{ name: 'reviews-id', params: { id: id } }">
         <div class="img" :style="{ backgroundImage: 'url(' + img + ')' }" />
+        <!-- <div class="img" /> -->
       </nuxt-link>
     </div>
     <div class="card-body">
@@ -10,17 +11,6 @@
       <p class="card-text ">{{ excerpt }}</p>
     </div>
   </div>
-  <!-- <div class="post-preview">
-      <div
-        :style="{ backgroudImage: 'url(' + thumbnailImage + ')' }"
-        class="post-preview-thumbnail"
-      ></div>
-      <div class="post-preview-content">
-        <h1>{{ title }}</h1>
-        <p>{{ excerpt }}</p>
-      </div>
-    </div> -->
-  <!-- </nuxt-link> -->
 </template>
 
 <script>
@@ -34,13 +24,15 @@ export default {
       type: String,
       required: true
     },
-    img: {
-      type: String,
-      required: true
-    },
     id: {
-      type: String,
+      type: Number,
       required: true
+    }
+  },
+  data() {
+    return {
+      img:
+        'https://static.wixstatic.com/media/03d7e2_2449f64a10564eebb4dab2af2f8ccfa9~mv2.jpg/v1/fill/w_400,h_408,al_c,q_80,usm_0.66_1.00_0.01/03d7e2_2449f64a10564eebb4dab2af2f8ccfa9~mv2.webp'
     }
   }
 }
