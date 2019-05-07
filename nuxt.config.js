@@ -72,6 +72,7 @@ export default {
    */
   axios: {
     baseURL: `https://cafeteller-api.herokuapp.com/`
+    // baseURL: 'http://127.0.0.1:8000/'
     // See https://github.com/nuxt-community/axios-module#options
   },
 
