@@ -1,16 +1,9 @@
 <template>
   <div class="container">
-    <div class="row">
-      <div class="content">
-        <h1>{{ cafereviews.title }}</h1>
-        <i class="material-icons" style="font-size: 26px;color:red;">
-          place
-        </i>
-        <span class="font-italic text-muted">{{ cafestore.address }}</span>
-        <hr />
-        <p>{{ cafereviews.content }}</p>
-      </div>
+    <div class="block-content">
+      <div v-html="rawContent"></div>
     </div>
+
     <div class="row">
       <div class="col">
         <div class="card" style="width: 65%;">
@@ -90,16 +83,40 @@ export default {
     // }
   },
   async asyncData({ params, $axios }) {
-    const cafereviews = await $axios.get(
+    let cafereviews = await $axios.get(
       `${$axios.defaults.baseURL}api/v1/reviews/${params.id}`
     )
     const cafestore = await $axios.get(
       `${$axios.defaults.baseURL}api/v1/cafestore/${cafereviews.data.store}`
     )
+    cafereviews = cafereviews.data
+
+    let rawContent = ''
+    const objContent = JSON.parse(cafereviews.content)
+    objContent['blocks'].forEach(block => {
+      switch (block['type']) {
+        case 'header':
+          rawContent += `<h${block.data['level']}>
+            ${block.data.text}
+          </h${block.data['level']}>`
+          break
+        case 'paragraph':
+          rawContent += `<p>${block.data.text}</p>`
+          break
+        case 'image':
+          rawContent += `<img style="margin-bottom: 10px; max-width: 650px;" src="${
+            block.data.file.url
+          }">`
+          break
+        default:
+          // code block
+          rawContent += `${block.data.text}`
+      }
+    })
     return {
-      cafereviews: cafereviews.data,
+      cafereviews: cafereviews,
       cafestore: cafestore.data,
-      project: 'project'
+      rawContent: rawContent
     }
   },
   methods: {
@@ -135,6 +152,41 @@ export default {
 </script>
 
 <style scoped>
+.block-content {
+  /* position: relative; */
+  max-width: 650px;
+  margin: 0 auto;
+  margin-bottom: 20px;
+}
+
+.block-content div >>> p {
+  margin-bottom: 20px;
+}
+
+.block-content div >>> h1 {
+  margin-bottom: 20px;
+}
+
+.block-content div >>> h2 {
+  margin-bottom: 20px;
+}
+
+.block-content div >>> h3 {
+  margin-bottom: 20px;
+}
+
+.block-content div >>> h4 {
+  margin-bottom: 20px;
+}
+
+.block-content div >>> h5 {
+  margin-bottom: 20px;
+}
+
+.block-content div >>> h6 {
+  margin-bottom: 20px;
+}
+
 .col {
   display: flex;
   justify-content: center;

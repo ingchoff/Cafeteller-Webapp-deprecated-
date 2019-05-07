@@ -37,7 +37,7 @@ export default {
   },
   async asyncData({ params, $axios }) {
     const cafestore = await $axios.get(
-      `https://cafeteller-api.herokuapp.com/api/v1/cafestore/`
+      `${$axios.defaults.baseURL}api/v1/cafestore/`
     )
     return {
       cafestore: cafestore.data,
@@ -52,6 +52,9 @@ export default {
     }
   },
   mounted() {
+    if (!localStorage.getItem('token')) {
+      this.$router.push({ path: '/login' })
+    }
     const EditorJS = require('@editorjs/editorjs')
     const Header = require('@editorjs/header')
     const ImageTool = require('@editorjs/image')
@@ -92,7 +95,7 @@ export default {
           const title = data['blocks'][0]['data']['text']
           const content = JSON.stringify(data)
           const newReview = await this.$axios.post(
-            `https://cafeteller-api.herokuapp.com/api/v1/reviews/`,
+            `${this.$axios.defaults.baseURL}api/v1/reviews/`,
             {
               title: title,
               content: content,
@@ -100,7 +103,7 @@ export default {
             },
             {
               headers: {
-                authorization: 'token ed86f4d7f369055f45e0e237c219666458ceca03'
+                authorization: 'token' + localStorage.getItem('token')
               }
             }
           )
