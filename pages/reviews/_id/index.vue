@@ -25,7 +25,7 @@
               Visit Us:
               <li v-for="url in storeUrl" :key="url.id">
                 <a :href="'https://' + url.url">
-                  <div v-html="imgUrl(url)"></div>
+                  <div v-html="imgUrl(url)"></div> <!-- eslint-disable-line -->
                 </a>
               </li>
               <nuxt-link
@@ -38,7 +38,7 @@
             <div class="store-map">
               <GoogleMap
                 style="width: 100%; height: 320px; margin-top: 30px;"
-                :storePos="{
+                :storePos="{ // eslint-disable-line
                   lat: cafestore.latitude,
                   lng: cafestore.longitude
                 }"
