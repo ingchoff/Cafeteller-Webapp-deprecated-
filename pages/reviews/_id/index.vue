@@ -38,7 +38,7 @@
             <div class="store-map">
               <GoogleMap
                 style="width: 100%; height: 320px; margin-top: 30px;"
-                :storePos="{ // eslint-disable-line
+                :storePos="{
                   lat: cafestore.latitude,
                   lng: cafestore.longitude
                 }"
