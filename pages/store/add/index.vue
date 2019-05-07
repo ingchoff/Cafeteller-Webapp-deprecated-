@@ -249,19 +249,14 @@ export default {
       this.logo = this.$refs.logo.files[0]
     },
     sendToBackend() {
-      let data = {
-        name: this.title,
-        description: this.description,
-        address: this.results,
-        latitude: this.coordinates.lat,
-        longitude: this.coordinates.lng,
-        logo: this.logo,
-        styles: this.stylesList.map(st => {
-          return st.name
-        }),
-        contracts: this.contracts
-      }
-      console.log(data)
+      let data = new FormData()
+      data.append('name', this.title)
+      data.append('description', this.description)
+      data.append('address', this.results)
+      data.append('latitude', this.coordinates.lat)
+      data.append('longitude', this.coordinates.lng)
+      data.append('logo', this.logo)
+
       this.$axios
         .post(`${this.$axios.defaults.baseURL}api/v1/cafestore/`, data, {
           headers: {
@@ -269,9 +264,28 @@ export default {
           }
         })
         .then(store => {
-          this.$router.push({
-            path: `store/${store.data.id}`
+          let update = store.data
+          update['styles'] = this.styleName.map(st => {
+            return st.name
           })
+          console.log(update)
+          this.$axios
+            .put(
+              `${this.$axios.defaults.baseURL}api/v1/cafestore/${
+                store.data.id
+              }`,
+              update,
+              {
+                headers: {
+                  authorization: 'token' + localStorage.getItem('token')
+                }
+              }
+            )
+            .then(hi => {
+              this.$router.push({
+                path: `store/${store.data.id}`
+              })
+            })
         })
         .catch(err => {
           alert('error please check field!')
