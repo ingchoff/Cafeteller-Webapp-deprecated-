@@ -25,7 +25,7 @@
               Visit Us:
               <li v-for="url in storeUrl" :key="url.id">
                 <a :href="'https://' + url.url">
-                  <div v-html="imgUrl(url)"></div>
+                  <div v-html="imgUrl(url)"></div> <!-- eslint-disable-line -->
                 </a>
               </li>
               <nuxt-link
