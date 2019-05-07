@@ -19,10 +19,11 @@
               <a>Contact us</a>
             </nuxt-link>
             <nuxt-link
-              v-if="$store.state.token !== null"
+              v-if="$store.state.role === '2'"
               to="/chat"
               tag="li"
               class="nav-link"
+              @click.native="openChat"
             >
               <a>Let's Chat</a>
             </nuxt-link>
@@ -66,10 +67,25 @@ export default {
     logout() {
       // eslint-disable-next-line no-console
       localStorage.clear()
-      location.replace('/login')
-      location.reload()
       this.$store.commit('ClearUser')
+      location.replace('/login')
     }
+    // async openChat() {
+    //   try {
+    //     const chat = await this.$axios.get(
+    //       `${this.$axios.defaults.baseURL}api/v1/get/token/`
+    //     )
+    //     // eslint-disable-next-line no-console
+    //     console.log(chat.data)
+    //     return {
+    //       chatData: chat.data,
+    //       project: 'project'
+    //     }
+    //   } catch (err) {
+    //     // eslint-disable-next-line no-console
+    //     console.log(err.response)
+    //   }
+    // }
   }
 }
 </script>

@@ -1,7 +1,6 @@
 <template>
-  <gmap-map id="myMap" ref="gmap" :center="storePos" :zoom="16">
-    <gmap-marker :position="storePos" @click="toggleInfoWindow(storePos)">
-    </gmap-marker>
+  <gmap-map id="myMap" ref="gmap" :center="pos" :zoom="16">
+    <gmap-marker :position="pos" @click="toggleInfoWindow(pos)"> </gmap-marker>
 
     <gmap-info-window
       :options="infoOptions"
@@ -17,11 +16,11 @@
 <script>
 export default {
   props: {
-    storePos: {
+    pos: {
       type: Object,
       required: true
     },
-    storeName: {
+    name: {
       type: String,
       required: true
     }
@@ -59,7 +58,7 @@ export default {
     // set bounds of the map
     this.$refs.gmap.$mapPromise.then(map => {
       // eslint-disable-next-line no-undef
-      map.panTo(this.storePos)
+      map.panTo(this.pos)
       // const bounds = new google.maps.LatLngBounds()
       // for (const m of this.markers) {
       //   bounds.extend(m.position)
@@ -79,7 +78,7 @@ export default {
     toggleInfoWindow: function(position) {
       // this.center = marker.position
       this.infoWindowPos = position
-      this.infoContent = this.getInfoWindowContent(this.storeName)
+      this.infoContent = this.getInfoWindowContent(this.name)
 
       // check if its the same marker that was selected if yes toggle
       // if (this.currentMidx === idx) {

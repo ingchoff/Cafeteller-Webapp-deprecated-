@@ -38,11 +38,11 @@
             <div class="store-map">
               <GoogleMap
                 style="width: 100%; height: 320px; margin-top: 30px;"
-                :storePos="{
+                :pos="{
                   lat: cafestore.latitude,
                   lng: cafestore.longitude
                 }"
-                :storeName="cafestore.name"
+                :name="cafestore.name"
               />
             </div>
           </div>

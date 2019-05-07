@@ -18,9 +18,13 @@
         </div>
       </div>
     </div>
-    <div class="col">asdasd</div>
+    <div class="col"></div>
   </div>
 </template>
+
+<script>
+export default {}
+</script>
 
 <style scoped>
 .contact-list {

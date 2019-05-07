@@ -70,8 +70,8 @@ export default {
         console.log(user.data)
         // eslint-disable-next-line no-console
         console.log(this.userApi.groups[0])
-        if (this.userApi.groups[0] === 0) {
-          this.$store.commit()
+        if (this.userApi.groups[0] === 2) {
+          localStorage.setItem('role', this.userApi.groups[0])
         }
         localStorage.setItem('token', ' ' + user.data.token)
         localStorage.setItem('user', this.username)
@@ -79,8 +79,6 @@ export default {
       } catch (err) {
         // eslint-disable-next-line no-console
         console.log(err.response)
-        // eslint-disable-next-line no-console
-        console.log(err)
       }
     }
   }

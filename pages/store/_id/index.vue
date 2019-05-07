@@ -35,11 +35,11 @@
         <p class="text-muted font-italic">{{ cafestore.address }}</p>
         <GoogleMap
           style="width: 100%; height: 400px; margin-top: 20px;"
-          :store-pos="{
+          :pos="{
             lat: cafestore.latitude,
             lng: cafestore.longitude
           }"
-          :store-name="cafestore.name"
+          :name="cafestore.name"
         />
       </div>
     </div>
