@@ -1,6 +1,6 @@
 <template>
   <header class="main-header">
-    <nav class="container main-nav">
+    <nav class="main-nav">
       <div class="banner">
         <h1 class="font-weight-normal">CAFE TELLER</h1>
         <p>GOOD CAFÉ DESERVES A SHOUTOUT</p>
@@ -18,10 +18,18 @@
             <nuxt-link to="/contact" tag="li" class="nav-link">
               <a>Contact us</a>
             </nuxt-link>
+            <nuxt-link
+              v-if="$store.state.token !== null"
+              to="/chat"
+              tag="li"
+              class="nav-link"
+            >
+              <a>Let's Chat</a>
+            </nuxt-link>
           </div>
         </div>
         <div class="col-3">
-          <div v-if="token === null" class="nav-user">
+          <div v-if="$store.state.token === null" class="nav-user">
             <nuxt-link to="/login" tag="li" class="login nav-link">
               <a>Login</a>
             </nuxt-link>
@@ -30,14 +38,17 @@
             </nuxt-link>
           </div>
           <div v-else class="nav-user">
-            Welcome, {{ username }} |
-            <button
-              type="button"
-              class="btn btn-danger register"
-              @click="logout"
+            <div class="user-login">
+              <p>Welcome,<br />{{ $store.state.username }}</p>
+            </div>
+            <nuxt-link
+              to="/login"
+              tag="li"
+              class="register nav-link"
+              @click.native="logout"
             >
-              Logout
-            </button>
+              <a>Logout</a>
+            </nuxt-link>
           </div>
         </div>
       </div>
@@ -48,26 +59,26 @@
 <script>
 export default {
   data() {
-    return {
-      username: '',
-      token: ''
-    }
+    return {}
   },
-  mounted() {
-    this.username = localStorage.getItem('user')
-    this.token = localStorage.getItem('token')
-  },
+  mounted() {},
   methods: {
     logout() {
       // eslint-disable-next-line no-console
-      console.log('test')
       localStorage.clear()
       location.replace('/login')
+      location.reload()
+      this.$store.commit('ClearUser')
     }
   }
 }
 </script>
 <style scoped>
+.user-login {
+  width: 100px;
+  font-size: 16px;
+  text-align: center;
+}
 .row {
   margin: 0;
   flex-wrap: nowrap;

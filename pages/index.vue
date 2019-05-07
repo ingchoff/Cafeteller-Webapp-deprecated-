@@ -26,7 +26,7 @@
         placeholder="Select one"
         label="name"
         track-by="name"
-        @input="filterCafe2"
+        @input="filterCafeByName"
       ></multiselect>
     </div>
   </div>
@@ -71,7 +71,7 @@ export default {
     filterCafeByPos() {
       this.$refs.map.getCafePos()
     },
-    filterCafe2() {
+    filterCafeByName() {
       // this.$refs.map.getCafePos()
       this.$refs.map.getCafeName()
     },
