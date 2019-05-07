@@ -3,8 +3,18 @@
     <div class="card-img-top">
       <nuxt-link :to="{ name: 'reviews-id', params: { id: id } }">
         <div
+          v-if="img !== ''"
           class="img"
           :style="{ backgroundImage: 'url(' + img + ')' }"
+          style="border-top-left-radius:8px;border-top-right-radius:8px;"
+        />
+        <div
+          v-else
+          class="img"
+          :style="{
+            backgroundImage:
+              'url(https://static.wixstatic.com/media/03d7e2_2449f64a10564eebb4dab2af2f8ccfa9~mv2.jpg/v1/fill/w_400,h_408,al_c,q_80,usm_0.66_1.00_0.01/03d7e2_2449f64a10564eebb4dab2af2f8ccfa9~mv2.webp)'
+          }"
           style="border-top-left-radius:8px;border-top-right-radius:8px;"
         />
       </nuxt-link>

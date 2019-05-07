@@ -19,7 +19,7 @@
               <a>Contact us</a>
             </nuxt-link>
             <nuxt-link
-              v-if="$store.state.role === '2'"
+              v-if="$store.state.role === '2' || $store.state.role === '1'"
               to="/chat"
               tag="li"
               class="nav-link"
@@ -62,7 +62,6 @@ export default {
   data() {
     return {}
   },
-  mounted() {},
   methods: {
     logout() {
       // eslint-disable-next-line no-console

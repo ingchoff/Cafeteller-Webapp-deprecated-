@@ -10,7 +10,34 @@
     </div>
     <div class="row">
       <div class="col content-left p-3">
-        <img src="https://mdbootstrap.com/img/Photos/Others/laptop-sm.jpg" />
+        <!-- <div
+          v-if="cafestore.logo !== ''"
+          class="img"
+          :style="{ backgroundImage: 'url(' + cafestore.logo + ')' }"
+          style="border-top-left-radius:8px;border-top-right-radius:8px;"
+        /> -->
+        <div
+          class="img"
+          :style="{
+            backgroundImage:
+              'url(https://mdbootstrap.com/img/Photos/Others/laptop-sm.jpg)'
+          }"
+          style="border-radius:50%"
+        />
+        <button
+          v-if="
+            this.$store.state.role === '3' &&
+              this.$store.state.is_subscribe === false
+          "
+          type="button"
+          class="btn btn-danger"
+          @click="subscribe"
+        >
+          Subscribe +
+        </button>
+        <button v-else type="button" class="btn btn-secondary">
+          Subscribed
+        </button>
         <hr class="my-4" />
         <div class="description">" {{ cafestore.description }} "</div>
       </div>
@@ -62,6 +89,24 @@ export default {
     }
   },
   methods: {
+    async subscribe() {
+      // this.$store.commit('Subscribe', { store: this.cafestore.id })
+      // location.reload()
+      try {
+        await this.$axios.post(
+          `${this.$axios.defaults.baseURL}api/v1/subscribe/store/${
+            this.cafestore.id
+          }/`,
+          {
+            headers: {
+              Authorization: 'token' + this.$store.state.token
+            }
+          }
+        )
+      } catch (err) {
+        console.log(err.request.response)
+      }
+    },
     imgUrl(object) {
       if (object.type === 'fb') {
         return `<img
@@ -94,6 +139,11 @@ export default {
 </script>
 
 <style scoped>
+.register a {
+  text-decoration: none;
+  color: red;
+  font-size: 15px;
+}
 .row {
   background-color: #ffdfd3;
   border-radius: 8px;
@@ -130,6 +180,12 @@ export default {
 .social li {
   display: inline-block;
   margin-right: 30px;
+}
+
+.img {
+  width: 320px;
+  height: 340px;
+  transition: all 0.3s ease-in-out;
 }
 
 .img-social {

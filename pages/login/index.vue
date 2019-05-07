@@ -23,7 +23,7 @@
       <div class="row">
         <div class="col">
           <button type="submit" class="btn">
-            Submit
+            Login
           </button>
         </div>
         <div class="col">
@@ -43,16 +43,7 @@ export default {
     return {
       username: '',
       password: '',
-      token: '',
-      userApi: {
-        username: 'ing',
-        password:
-          'pbkdf2_sha256$150000$NnWnEvpGhAI8$oNvQzKF70qubwo+TcgcsC2H8NU1+ZFow3hSTxuEpPNI=',
-        email: 'ingkaratt@gmail.com',
-        first_name: '',
-        last_name: '',
-        groups: [2]
-      }
+      token: ''
     }
   },
   methods: {
@@ -66,13 +57,6 @@ export default {
             password: this.password
           }
         )
-        // eslint-disable-next-line no-console
-        console.log(user.data)
-        // eslint-disable-next-line no-console
-        console.log(this.userApi.groups[0])
-        if (this.userApi.groups[0] === 2) {
-          localStorage.setItem('role', this.userApi.groups[0])
-        }
         localStorage.setItem('token', ' ' + user.data.token)
         localStorage.setItem('user', this.username)
         location.replace('/')

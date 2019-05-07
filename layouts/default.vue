@@ -15,6 +15,13 @@ export default {
   components: {
     Header,
     Footer
+  },
+  mounted() {
+    this.$store.commit('SetUser', {
+      username: localStorage.getItem('user'),
+      token: localStorage.getItem('token'),
+      role: localStorage.getItem('role')
+    })
   }
 }
 </script>

@@ -17,7 +17,10 @@
     >
       <!-- eslint-disable-next-line vue/no-v-html -->
       <div v-html="infoContent"></div>
-      <nuxt-link to="/store" class="register">
+      <nuxt-link
+        :to="{ name: 'store-id', params: { id: storeId } }"
+        class="register"
+      >
         <a>Our Store Page</a>
       </nuxt-link>
     </gmap-info-window>
@@ -39,7 +42,7 @@ export default {
   },
   data() {
     return {
-      cafeid: 1,
+      storeId: 1,
       myLat: 0,
       myLng: 0,
       myCenter: {},
@@ -87,6 +90,7 @@ export default {
         )
         this.markers = cafestore.data.map(cafe => {
           return {
+            id: cafe.id,
             name: cafe.name,
             position: { lat: cafe.latitude, lng: cafe.longitude }
           }
@@ -106,6 +110,7 @@ export default {
               bounds.extend(m.position)
             }
             map.fitBounds(bounds)
+            // this.markers.length = 0
           }
         })
       } catch (err) {
@@ -114,13 +119,14 @@ export default {
       }
     },
     async getCafeName() {
+      this.markers.length = 0
       const cafeName = await this.$axios.get(
         `${this.$axios.defaults.baseURL}api/v1/cafestore/`
       )
+      console.log(this.markers.length)
       for (let i = 0; i < cafeName.data.length; i++) {
         if (cafeName.data[i].name === this.nameinput.name) {
           // eslint-disable-next-line no-console
-          // console.log(cafeName.data[i].latitude)
           this.markers.push({
             id: cafeName.data[i].id,
             name: cafeName.data[i].name,
@@ -129,6 +135,7 @@ export default {
               lng: cafeName.data[i].longitude
             }
           })
+          console.log(this.markers)
           this.$refs.gmap.$mapPromise.then(map => {
             if (this.markers.length === 0) {
               // eslint-disable-next-line no-undef
@@ -137,74 +144,17 @@ export default {
               this.errorMsg = 'ไม่พบร้านกาแฟใกล้เคียง'
             } else {
               // eslint-disable-next-line no-undef
-              // const bounds = new google.maps.LatLngBounds()
-              // for (const m of this.markers) {
-              //   bounds.extend(m.position)
-              // }
-              // eslint-disable-next-line no-undef
               const bounds = new google.maps.LatLngBounds()
               for (const m of this.markers) {
                 bounds.extend(m.position)
               }
               map.fitBounds(bounds)
-              this.markers = []
             }
+            // this.markers.length = 0
           })
         }
       }
     },
-    // async getCafeStyle() {
-    //   try {
-    //     const cafeStyle = await this.$axios.get(
-    //       `${this.$axios.defaults.baseURL}api/v1/cafestore/`
-    //     )
-    //     for (let i = 0; i < cafeStyle.data.length; i++) {
-    //       // eslint-disable-next-line no-console
-    //       console.log(cafeStyle.data[i].styles)
-    //       for (let j = 0; j < this.styles.length; j++) {
-    //         if (cafeStyle.data[i].styles.includes(this.styles[j].code)) {
-    //           // eslint-disable-next-line no-console
-    //           console.log('true')
-    //           // eslint-disable-next-line no-console
-    //           console.log(cafeStyle.data[i])
-    //           // this.markers.push(cafeStyle.data[i])
-    //           this.markers = cafeStyle.data[i].map(cafe => {
-    //             return {
-    //               name: cafe.name,
-    //               position: { lat: cafe.latitude, lng: cafe.longitude }
-    //             }
-    //           })
-    //         } else {
-    //           // eslint-disable-next-line no-console
-    //           console.log('false')
-    //         }
-    //       }
-    //     }
-    //     // eslint-disable-next-line no-console
-    //     console.log(this.markers)
-    //     this.$refs.gmap.$mapPromise.then(map => {
-    //       if (this.markers.length === 0) {
-    //         // eslint-disable-next-line no-undef
-    //         const myLatLng = new google.maps.LatLng(this.myLat, this.myLng)
-    //         map.panTo(myLatLng)
-    //         this.errorMsg = 'ไม่พบร้านกาแฟใกล้เคียง'
-    //       } else {
-    //         // eslint-disable-next-line no-undef
-    //         const bounds = new google.maps.LatLngBounds()
-    //         for (const m of this.markers) {
-    //           bounds.extend({
-    //             lat: m.latitude,
-    //             lng: m.longitude
-    //           })
-    //         }
-    //         map.fitBounds(bounds)
-    //       }
-    //     })
-    //   } catch (err) {
-    //     // eslint-disable-next-line no-console
-    //     console.log(err.response.data.error)
-    //   }
-    // },
     arraysEqual(a, b) {
       if (a === b) return true
       if (a == null || b == null) return false
@@ -222,6 +172,7 @@ export default {
     },
     toggleInfoWindow: function(marker, idx) {
       // this.center = marker.position
+      this.storeId = marker.id
       this.infoWindowPos = marker.position
       this.infoContent = this.getInfoWindowContent(marker)
       // check if its the same marker that was selected if yes toggle
@@ -235,7 +186,6 @@ export default {
       }
     },
     getInfoWindowContent: function(marker) {
-      this.cafeid = marker.id
       return `
         <div class="card-content text-center">
           <div class="media">
@@ -257,7 +207,8 @@ export default {
   background: #fdfd96;
   /* padding: 10px 40px 10px 40px; */
   border-radius: 20px;
-  color: #fff;
+  color: black;
+  text-decoration: none;
   /* margin-left: 5px; */
 }
 .register a:link,

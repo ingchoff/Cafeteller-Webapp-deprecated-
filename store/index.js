@@ -2,7 +2,8 @@ export const state = () => ({
   username: null,
   token: null,
   role: null,
-  chatInfo: []
+  chatInfo: [],
+  is_subscribe: false
 })
 
 export const mutations = {
@@ -18,5 +19,14 @@ export const mutations = {
   },
   SetChat(state, chat) {
     state.chatInfo = chat
+  },
+  async Subscribe(state, id) {
+    // try {
+    //   await this.$axios.post(
+    //     `${this.$axios.defaults.baseURL}api/v1/subscribe/store/${id.store}/`
+    //   )
+    // } catch (err) {
+    //   console.log(err.request.response)
+    // }
   }
 }

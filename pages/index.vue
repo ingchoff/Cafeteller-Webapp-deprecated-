@@ -56,16 +56,6 @@ export default {
       project: 'project'
     }
   },
-  // async getToken({ params, $axios }) {
-  //   const chatToken = await $axios.get(
-  //     `${$axios.defaults.baseURL}api/v1/get/token`,
-  //     { headers: { Authorization: 'token' + this.$store.state.token } }
-  //   )
-  //   return {
-  //     cafestore: chatToken.data,
-  //     project: 'project'
-  //   }
-  // },
   async mounted() {
     for (let i = 0; i < this.cafestore.length; i++) {
       this.cafename.push({
@@ -87,6 +77,26 @@ export default {
         }
       )
       this.$store.commit('SetChat', chatToken)
+      // eslint-disable-next-line no-unreachable
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err.request.response)
+    }
+    try {
+      const userrole = await this.$axios.get(
+        `${this.$axios.defaults.baseURL}api/v1/myuser/`,
+        {
+          headers: {
+            Authorization: 'token' + this.$store.state.token
+          }
+        }
+      )
+      localStorage.setItem('role', userrole.data[0].groups[0])
+      this.$store.commit('SetUser', {
+        username: localStorage.getItem('user'),
+        token: localStorage.getItem('token'),
+        role: localStorage.getItem('role')
+      })
       // eslint-disable-next-line no-unreachable
     } catch (err) {
       // eslint-disable-next-line no-console
