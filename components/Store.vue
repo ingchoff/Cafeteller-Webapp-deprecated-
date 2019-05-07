@@ -1,7 +1,7 @@
 <template>
   <div class="card" style="border-radius:8px;">
     <div class="card-img-top">
-      <nuxt-link :to="{ name: 'reviews-id', params: { id: id } }">
+      <nuxt-link :to="{ name: 'store-id', params: { id: id } }">
         <div
           class="img"
           :style="{ backgroundImage: 'url(' + img + ')' }"

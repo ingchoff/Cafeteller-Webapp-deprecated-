@@ -1,24 +1,78 @@
 <template>
   <header class="main-header">
-    <nav class="main-nav">
+    <nav class="container main-nav">
       <div class="banner">
         <h1 class="font-weight-normal">CAFE TELLER</h1>
         <p>GOOD CAFÉ DESERVES A SHOUTOUT</p>
       </div>
-      <div class="nav-links">
-        <nuxt-link to="/" tag="li" class="nav-link"><a>Home</a></nuxt-link>
-        <nuxt-link to="/reviews" tag="li" class="nav-link">
-          <a>Review</a>
-        </nuxt-link>
-        <nuxt-link to="/contact" tag="li" class="nav-link">
-          <a>Contact us</a>
-        </nuxt-link>
+      <div class="row">
+        <div class="col">
+          <div class="nav-links">
+            <nuxt-link to="/" tag="li" class="nav-link"><a>Home</a></nuxt-link>
+            <nuxt-link to="/reviews" tag="li" class="nav-link">
+              <a>Review</a>
+            </nuxt-link>
+            <nuxt-link to="/store" tag="li" class="nav-link">
+              <a>CafeStore</a>
+            </nuxt-link>
+            <nuxt-link to="/contact" tag="li" class="nav-link">
+              <a>Contact us</a>
+            </nuxt-link>
+          </div>
+        </div>
+        <div class="col-3">
+          <div v-if="token === null" class="nav-user">
+            <nuxt-link to="/login" tag="li" class="login nav-link">
+              <a>Login</a>
+            </nuxt-link>
+            <nuxt-link to="/register" tag="li" class="register nav-link">
+              <a>Register</a>
+            </nuxt-link>
+          </div>
+          <div v-else class="nav-user">
+            Welcome, {{ username }} |
+            <button
+              type="button"
+              class="btn btn-danger register"
+              @click="logout"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
       </div>
     </nav>
   </header>
 </template>
 
+<script>
+export default {
+  data() {
+    return {
+      username: '',
+      token: ''
+    }
+  },
+  mounted() {
+    this.username = localStorage.getItem('user')
+    this.token = localStorage.getItem('token')
+  },
+  methods: {
+    logout() {
+      // eslint-disable-next-line no-console
+      console.log('test')
+      localStorage.clear()
+      location.replace('/login')
+    }
+  }
+}
+</script>
 <style scoped>
+.row {
+  margin: 0;
+  flex-wrap: nowrap;
+}
+
 .main-header {
   position: absolute;
   top: 0;
@@ -58,14 +112,32 @@
   margin: 0;
   padding: 0;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
+}
+
+.nav-user {
+  justify-content: flex-end;
+  display: flex;
 }
 
 .nav-link {
   height: 100%;
   margin: 0 2rem;
   padding: 0.3rem;
+}
+
+.login {
+  border-right: 1px solid #e6e6e6;
+  margin: 0;
+}
+
+.register {
+  background: #f4a460;
+  /* padding: 10px 40px 10px 40px; */
+  border-radius: 20px;
+  color: #fff;
+  margin-left: 5px;
 }
 
 .nav-link a {

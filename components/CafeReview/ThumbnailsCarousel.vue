@@ -26,7 +26,7 @@
         </div>
       </div>
     </div>
-    <a
+    <!-- <a
       class="carousel-control-prev"
       href="#carouselExampleCaptions"
       role="button"
@@ -43,7 +43,7 @@
     >
       <span class="carousel-control-next-icon" aria-hidden="true"></span>
       <span class="sr-only">Next</span>
-    </a>
+    </a> -->
     <div class="image-indicators">
       <ol class="carousel-indicators">
         <li
@@ -78,16 +78,18 @@
 .carousel {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 .carousel-item img {
-  width: 620px;
+  width: 500px;
   /* height: 563px; */
 }
 .carousel-indicators {
   list-style: none;
   position: relative;
   margin: 0;
-  justify-content: start;
+  justify-content: center;
 }
 .carousel-indicators li {
   width: 88px;
@@ -111,5 +113,6 @@
 }
 .image-indicators {
   width: 100%;
+  justify-content: center;
 }
 </style>

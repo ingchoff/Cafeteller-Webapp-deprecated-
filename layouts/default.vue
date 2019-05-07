@@ -25,6 +25,8 @@ export default {
 }
 
 .main-content {
+  font-family: 'Playfair Display', serif;
+  font-family: 'Bai Jamjuree', sans-serif;
   margin-top: 230px;
   margin-bottom: 60px;
 }

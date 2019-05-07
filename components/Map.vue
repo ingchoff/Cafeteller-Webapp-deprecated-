@@ -1,6 +1,12 @@
+/* eslint-disable vue/no-v-html */
 <template>
-  <gmap-map id="myMap" ref="gmap" :center="storePos" :zoom="16">
-    <gmap-marker :position="storePos" @click="toggleInfoWindow(storePos)">
+  <gmap-map ref="gmap" :center="{ lat: myLat, lng: myLng }" :zoom="12">
+    <gmap-marker
+      v-for="(m, index) in markers"
+      :key="index"
+      :position="m.position"
+      @click="toggleInfoWindow(m, index)"
+    >
     </gmap-marker>
 
     <gmap-info-window
@@ -9,32 +15,34 @@
       :opened="infoWinOpen"
       @closeclick="infoWinOpen = false"
     >
+      <!-- eslint-disable-next-line vue/no-v-html -->
       <div v-html="infoContent"></div>
+      <nuxt-link to="/store" class="register">
+        <a>Our Store Page</a>
+      </nuxt-link>
     </gmap-info-window>
   </gmap-map>
 </template>
 
 <script>
 export default {
+  components: {},
   props: {
-    storePos: {
-      type: Object,
+    km: {
+      type: Number,
       required: true
     },
-    storeName: {
-      type: String,
+    nameinput: {
+      type: Object,
       required: true
     }
   },
   data() {
     return {
-      // center: { lat: -3.350235, lng: 111.995865 },
-      // mapTypeId: 'terrain',
-      // markers: [
-      //   { position: { lat: -0.48585, lng: 117.1466 } },
-      //   { position: { lat: -6.9127778, lng: 107.6205556 } }
-      // ]
-      center: { lat: 52.51195, lng: 6.089625 },
+      cafeid: 1,
+      myLat: 0,
+      myLng: 0,
+      myCenter: {},
       map: null,
       infoContent: '',
       infoWindowPos: {
@@ -49,61 +57,212 @@ export default {
           width: 0,
           height: -35
         }
-      }
+      },
+      markers: [],
+      store: [],
+      errorMsg: null
     }
   },
   mounted() {
     // this.getUserLocation()
     // set bounds of the map
     this.$refs.gmap.$mapPromise.then(map => {
-      // eslint-disable-next-line no-undef
-      map.panTo(this.storePos)
-      // const bounds = new google.maps.LatLngBounds()
-      // for (const m of this.markers) {
-      //   bounds.extend(m.position)
-      // }
-      // map.fitBounds(bounds)
-      // if (navigator.geolocation) {
-      //   navigator.geolocation.getCurrentPosition(function(position) {
-      //     map.panTo({
-      //       lat: position.coords.latitude,
-      //       lng: position.coords.longitude
-      //     })
-      //   })
-      // }
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async position => {
+          this.myLat = position.coords.latitude
+          this.myLng = position.coords.longitude
+          await this.getCafePos()
+          await this.getCafeName()
+        })
+      }
     })
   },
   methods: {
-    toggleInfoWindow: function(position) {
-      // this.center = marker.position
-      this.infoWindowPos = position
-      this.infoContent = this.getInfoWindowContent(this.storeName)
-
-      // check if its the same marker that was selected if yes toggle
-      // if (this.currentMidx === idx) {
-      this.infoWinOpen = !this.infoWinOpen
-      // if different marker set infowindow to open and reset current marker index
-      // else {
-      // this.infoWinOpen = true
-      // this.currentMidx = idx
+    async getCafePos() {
+      try {
+        const cafestore = await this.$axios.get(
+          `${this.$axios.defaults.baseURL}api/v1/cafestore/filter/?lat=${
+            this.myLat
+          }&lon=${this.myLng}&km=${this.km}`
+        )
+        this.markers = cafestore.data.map(cafe => {
+          return {
+            name: cafe.name,
+            position: { lat: cafe.latitude, lng: cafe.longitude }
+          }
+        })
+        // eslint-disable-next-line no-console
+        console.log('cafepos' + this.markers)
+        this.$refs.gmap.$mapPromise.then(map => {
+          if (this.markers.length === 0) {
+            // eslint-disable-next-line no-undef
+            const myLatLng = new google.maps.LatLng(this.myLat, this.myLng)
+            map.panTo(myLatLng)
+            this.errorMsg = 'ไม่พบร้านกาแฟใกล้เคียง'
+          } else {
+            // eslint-disable-next-line no-undef
+            const bounds = new google.maps.LatLngBounds()
+            for (const m of this.markers) {
+              bounds.extend(m.position)
+            }
+            map.fitBounds(bounds)
+          }
+        })
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.log(err.response)
+      }
     },
-    getInfoWindowContent: function(name) {
+    async getCafeName() {
+      const cafeName = await this.$axios.get(
+        `${this.$axios.defaults.baseURL}api/v1/cafestore/`
+      )
+      for (let i = 0; i < cafeName.data.length; i++) {
+        if (cafeName.data[i].name === this.nameinput.name) {
+          // eslint-disable-next-line no-console
+          // console.log(cafeName.data[i].latitude)
+          this.markers.push({
+            id: cafeName.data[i].id,
+            name: cafeName.data[i].name,
+            position: {
+              lat: cafeName.data[i].latitude,
+              lng: cafeName.data[i].longitude
+            }
+          })
+          this.$refs.gmap.$mapPromise.then(map => {
+            if (this.markers.length === 0) {
+              // eslint-disable-next-line no-undef
+              const myLatLng = new google.maps.LatLng(this.myLat, this.myLng)
+              map.panTo(myLatLng)
+              this.errorMsg = 'ไม่พบร้านกาแฟใกล้เคียง'
+            } else {
+              // eslint-disable-next-line no-undef
+              // const bounds = new google.maps.LatLngBounds()
+              // for (const m of this.markers) {
+              //   bounds.extend(m.position)
+              // }
+              // eslint-disable-next-line no-undef
+              const bounds = new google.maps.LatLngBounds()
+              for (const m of this.markers) {
+                bounds.extend(m.position)
+              }
+              map.fitBounds(bounds)
+              this.markers = []
+            }
+          })
+        }
+      }
+    },
+    // async getCafeStyle() {
+    //   try {
+    //     const cafeStyle = await this.$axios.get(
+    //       `${this.$axios.defaults.baseURL}api/v1/cafestore/`
+    //     )
+    //     for (let i = 0; i < cafeStyle.data.length; i++) {
+    //       // eslint-disable-next-line no-console
+    //       console.log(cafeStyle.data[i].styles)
+    //       for (let j = 0; j < this.styles.length; j++) {
+    //         if (cafeStyle.data[i].styles.includes(this.styles[j].code)) {
+    //           // eslint-disable-next-line no-console
+    //           console.log('true')
+    //           // eslint-disable-next-line no-console
+    //           console.log(cafeStyle.data[i])
+    //           // this.markers.push(cafeStyle.data[i])
+    //           this.markers = cafeStyle.data[i].map(cafe => {
+    //             return {
+    //               name: cafe.name,
+    //               position: { lat: cafe.latitude, lng: cafe.longitude }
+    //             }
+    //           })
+    //         } else {
+    //           // eslint-disable-next-line no-console
+    //           console.log('false')
+    //         }
+    //       }
+    //     }
+    //     // eslint-disable-next-line no-console
+    //     console.log(this.markers)
+    //     this.$refs.gmap.$mapPromise.then(map => {
+    //       if (this.markers.length === 0) {
+    //         // eslint-disable-next-line no-undef
+    //         const myLatLng = new google.maps.LatLng(this.myLat, this.myLng)
+    //         map.panTo(myLatLng)
+    //         this.errorMsg = 'ไม่พบร้านกาแฟใกล้เคียง'
+    //       } else {
+    //         // eslint-disable-next-line no-undef
+    //         const bounds = new google.maps.LatLngBounds()
+    //         for (const m of this.markers) {
+    //           bounds.extend({
+    //             lat: m.latitude,
+    //             lng: m.longitude
+    //           })
+    //         }
+    //         map.fitBounds(bounds)
+    //       }
+    //     })
+    //   } catch (err) {
+    //     // eslint-disable-next-line no-console
+    //     console.log(err.response.data.error)
+    //   }
+    // },
+    arraysEqual(a, b) {
+      if (a === b) return true
+      if (a == null || b == null) return false
+      if (a.length !== b.length) return false
+
+      // If you don't care about the order of the elements inside
+      // the array, you should sort both arrays here.
+      // Please note that calling sort on an array will modify that array.
+      // you might want to clone your array first.
+
+      for (let i = 0; i < a.length; ++i) {
+        if (a[i] !== b[i]) return false
+      }
+      return true
+    },
+    toggleInfoWindow: function(marker, idx) {
+      // this.center = marker.position
+      this.infoWindowPos = marker.position
+      this.infoContent = this.getInfoWindowContent(marker)
+      // check if its the same marker that was selected if yes toggle
+      if (this.currentMidx === idx) {
+        this.infoWinOpen = !this.infoWinOpen
+      }
+      // if different marker set infowindow to open and reset current marker index
+      else {
+        this.infoWinOpen = true
+        this.currentMidx = idx
+      }
+    },
+    getInfoWindowContent: function(marker) {
+      this.cafeid = marker.id
       return `
-  <div class="card-content text-center">
-    <div class="media">
-      <div class="media-content">
-        <p class="title is-4 font-weight-bold">${name}</p>
-      </div>
-    </div>
-  </div>
-`
+        <div class="card-content text-center">
+          <div class="media">
+            <div class="media-content">
+              <p class="title is-4 font-weight-bold">${marker.name}</p>
+            </div>
+          </div>
+        </div>
+      `
+      // return pinCard
     }
   }
 }
 </script>
 
 <style scoped>
-#myMap {
-  border-radius: 50px;
+.register {
+  width: 10rem;
+  background: #fdfd96;
+  /* padding: 10px 40px 10px 40px; */
+  border-radius: 20px;
+  color: #fff;
+  /* margin-left: 5px; */
+}
+.register a:link,
+.register a:hover {
+  color: black;
+  text-decoration: none;
 }
 </style>
