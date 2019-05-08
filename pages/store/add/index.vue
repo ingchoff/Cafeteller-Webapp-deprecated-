@@ -78,73 +78,6 @@
       @tag="addTag"
     />
 
-    <h6 style="margin-top: 10px;">ช่องทางติดต่อของร้าน</h6>
-    <div v-if="error != null" style="color: red;">
-      {{ error.contracts }}
-    </div>
-    <ul class="list-group">
-      <li class="list-group-item">
-        <div class="row">
-          <div class="col-4">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="detail"
-              v-model="contracts[0].url"
-            />
-          </div>
-          <div class="col-4">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="wb"
-              v-model="contracts[0].type"
-            />
-          </div>
-        </div>
-      </li>
-      <li class="list-group-item">
-        <div class="row">
-          <div class="col-4">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="detail"
-              v-model="contracts[1].url"
-            />
-          </div>
-          <div class="col-4">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="ph"
-              v-model="contracts[1].type"
-            />
-          </div>
-        </div>
-      </li>
-      <li class="list-group-item">
-        <div class="row">
-          <div class="col-4">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="detail"
-              v-model="contracts[2].url"
-            />
-          </div>
-          <div class="col-4">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="tw"
-              v-model="contracts[2].type"
-            />
-          </div>
-        </div>
-      </li>
-    </ul>
-
     <button
       @click="sendToBackend"
       style="margin-top: 10px"
@@ -264,28 +197,31 @@ export default {
           }
         })
         .then(store => {
-          let update = store.data
+          let update = {}
           update['styles'] = this.styleName.map(st => {
             return st.name
           })
           console.log(update)
           this.$axios
-            .put(
+            .patch(
               `${this.$axios.defaults.baseURL}api/v1/cafestore/${
                 store.data.id
-              }`,
+              }/`,
               update,
               {
                 headers: {
-                  authorization: 'token' + localStorage.getItem('token')
+                  authorization: 'token' + localStorage.getItem('token'),
+                  'Content-Type': 'application/json'
                 }
               }
             )
-            .then(hi => {
-              this.$router.push({
-                path: `store/${store.data.id}`
-              })
+            .catch(error => {
+              console.log(error)
             })
+          this.$router.push({
+            name: 'store-id',
+            params: { id: store.data.id }
+          })
         })
         .catch(err => {
           alert('error please check field!')
