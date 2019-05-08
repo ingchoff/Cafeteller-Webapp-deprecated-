@@ -198,7 +198,7 @@ export default {
         })
         .then(store => {
           let update = {}
-          update['styles'] = this.styleName.map(st => {
+          update['styles'] = this.stylesList.map(st => {
             return st.name
           })
           console.log(update)
