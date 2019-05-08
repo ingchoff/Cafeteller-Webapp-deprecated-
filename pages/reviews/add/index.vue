@@ -1,23 +1,66 @@
 <template>
-  <div class="container">
+  <div class="ce-block__content">
+    <h2>Add New Review</h2>
+    <ol>
+      <li>ใส่บล็อกแรกเป็น Title</li>
+      <li>
+        จำเป็นต้องเลือกคาเฟ่ก่อน ถ้าไม่มีคาเฟ่
+        <a href="#">สร้างคาเฟ่</a>
+      </li>
+      <li>
+        เลือกคาเฟ่
+        <Multiselect v-model="value" :options="cafeName"></Multiselect>
+      </li>
+    </ol>
+    <h4>Add Text by clicking space below</h4>
+    <h6>----------------------------</h6>
     <div id="editorjs"></div>
     <div class="d-flex justify-content-center">
-      <button type="button" class="btn btn-default save">Save</button>
+      <button @click="editorSave" type="button" class="btn btn-default save">
+        Save
+      </button>
     </div>
   </div>
 </template>
 
 <script>
+import Multiselect from 'vue-multiselect'
+
 export default {
+  components: {
+    Multiselect
+  },
   data() {
-    return {}
+    return {
+      value: ''
+    }
+  },
+  async asyncData({ params, $axios }) {
+    const cafestore = await $axios.get(
+      `${$axios.defaults.baseURL}api/v1/cafestore/`
+    )
+    return {
+      cafestore: cafestore.data,
+      project: 'project'
+    }
+  },
+  computed: {
+    cafeName() {
+      return this.cafestore.map(cafe => {
+        return cafe.name
+      })
+    }
   },
   mounted() {
+    if (!localStorage.getItem('token')) {
+      this.$router.push({ path: '/login' })
+    }
     const EditorJS = require('@editorjs/editorjs')
     const Header = require('@editorjs/header')
     const ImageTool = require('@editorjs/image')
 
-    let editor = new EditorJS({ // eslint-disable-line
+    this.editor = new EditorJS({
+      // eslint-disable-line
       holderId: 'editorjs',
       tools: {
         header: {
@@ -34,6 +77,45 @@ export default {
         }
       }
     })
+  },
+  methods: {
+    editorSave() {
+      // get selected store id
+      let selected = this.cafestore.filter(cafe => {
+        return cafe.name === this.value
+      })
+      if (selected.length > 0) {
+        selected = selected[0]
+      } else {
+        alert('กรุณาเลือกคาเฟ่ก่อน')
+        return
+      }
+      this.editor.save().then(async data => {
+        try {
+          const title = data['blocks'][0]['data']['text']
+          const content = JSON.stringify(data)
+          const newReview = await this.$axios.post(
+            `${this.$axios.defaults.baseURL}api/v1/reviews/`,
+            {
+              title: title,
+              content: content,
+              store: selected.id
+            },
+            {
+              headers: {
+                authorization: 'token' + localStorage.getItem('token')
+              }
+            }
+          )
+          this.newReview = newReview.data
+          console.log(this.newReview)
+          this.$router.push({ path: `/reviews/${this.newReview.id}` })
+        } catch (err) {
+          console.log(err.request.response)
+          alert('error')
+        }
+      })
+    }
   }
 }
 </script>
