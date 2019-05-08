@@ -93,7 +93,7 @@ export default {
       // this.$store.commit('Subscribe', { store: this.cafestore.id })
       // location.reload()
       try {
-        await this.$axios.post(
+        await this.$axios.get(
           `${this.$axios.defaults.baseURL}api/v1/subscribe/store/${
             this.cafestore.id
           }/`,
@@ -103,6 +103,8 @@ export default {
             }
           }
         )
+        this.$store.state.is_subscribe = true
+        location.reload()
       } catch (err) {
         console.log(err.request.response)
       }
