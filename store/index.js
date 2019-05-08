@@ -20,7 +20,8 @@ export const mutations = {
   SetChat(state, chat) {
     state.chatInfo = chat
   },
-  async Subscribe(state, id) {
+  Subscribe(state, value) {
+    state.is_subscribe = value.val
     // try {
     //   await this.$axios.post(
     //     `${this.$axios.defaults.baseURL}api/v1/subscribe/store/${id.store}/`

@@ -25,10 +25,7 @@
           style="border-radius:50%"
         />
         <button
-          v-if="
-            this.$store.state.role === '3' &&
-              this.$store.state.is_subscribe === false
-          "
+          v-if="this.is_sub === false"
           type="button"
           class="btn btn-danger"
           @click="subscribe"
@@ -88,10 +85,28 @@ export default {
       project: 'project'
     }
   },
+  async mounted() {
+    // const myuser = await this.$axios.get(
+    //   `${this.$axios.defaults.baseURL}api/v1/myuser/`,
+    //   {
+    //     headers: {
+    //       Authorization: 'token' + this.$store.state.token
+    //     }
+    //   }
+    // )
+    // return {
+    //   myuser: myuser.data
+    // }
+    // for (let i = 0; i < this.cafestore.subscriber.length; i++) {
+    //   if (this.cafestore.subscriber[i] === myuser.data.id) {
+    //     this.is_sub = true
+    //   } else {
+    //     this.is_sub = false
+    //   }
+    // }
+  },
   methods: {
     async subscribe() {
-      // this.$store.commit('Subscribe', { store: this.cafestore.id })
-      // location.reload()
       try {
         await this.$axios.get(
           `${this.$axios.defaults.baseURL}api/v1/subscribe/store/${
@@ -103,10 +118,9 @@ export default {
             }
           }
         )
-        this.$store.state.is_subscribe = true
-        location.reload()
       } catch (err) {
         console.log(err.request.response)
+        this.is_sub = true
       }
     },
     imgUrl(object) {
@@ -135,6 +149,12 @@ export default {
                     src="https://static.wixstatic.com/media/01c3aff52f2a4dffa526d7a9843d46ea.png/v1/fill/w_25,h_25,al_c,q_80,usm_0.66_1.00_0.01/01c3aff52f2a4dffa526d7a9843d46ea.webp"
                 />`
       }
+    }
+  },
+  data() {
+    return {
+      is_sub: false,
+      token: ''
     }
   }
 }
