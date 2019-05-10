@@ -40,6 +40,9 @@ export default {
     return {
       cafestore: cafestore.data
     }
+  },
+  mounted() {
+    this.$store.commit('SetUrl', this.$route.path)
   }
 }
 </script>

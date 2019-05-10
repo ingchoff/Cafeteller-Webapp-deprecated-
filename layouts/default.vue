@@ -22,7 +22,7 @@ export default {
       token: localStorage.getItem('token'),
       role: localStorage.getItem('role')
     })
-    this.$store.commit('SetUrl', this.$route.path)
+    // this.$store.commit('SetUrl', this.$route.path)
   }
 }
 </script>

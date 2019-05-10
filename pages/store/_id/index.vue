@@ -90,6 +90,7 @@ export default {
     }
   },
   async mounted() {
+    this.$store.commit('SetUrl', this.$route.path)
     try {
       const myuser = await this.$axios.get(
         `${this.$axios.defaults.baseURL}api/v1/myuser/`,

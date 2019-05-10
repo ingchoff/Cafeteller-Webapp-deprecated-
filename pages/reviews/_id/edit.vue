@@ -56,9 +56,21 @@ export default {
     }
   },
   mounted() {
-    if (!localStorage.getItem('token')) {
-      this.$router.push({ path: '/login' })
+    this.$store.commit('SetUrl', this.$route.path)
+    this.$store.commit('SetUser', {
+      username: localStorage.getItem('user'),
+      token: localStorage.getItem('token'),
+      role: localStorage.getItem('role')
+    })
+    if (!this.$store.state.token) {
+      this.$router.push({
+        name: 'login',
+        params: { redirect: this.$store.state.redirectUrl }
+      })
     }
+    // if (!localStorage.getItem('token')) {
+    //   this.$router.push({ path: '/login' })
+    // }
     const EditorJS = require('@editorjs/editorjs')
     const Header = require('@editorjs/header')
     const ImageTool = require('@editorjs/image')

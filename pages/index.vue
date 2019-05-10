@@ -55,6 +55,7 @@ export default {
     }
   },
   async mounted() {
+    this.$store.commit('SetUrl', this.$route.path)
     for (let i = 0; i < this.cafestore.length; i++) {
       this.cafename.push({
         name: this.cafestore[i].name

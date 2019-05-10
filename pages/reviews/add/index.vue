@@ -54,11 +54,11 @@ export default {
   },
   mounted() {
     this.$store.commit('SetUrl', this.$route.path)
-    // this.$store.commit('SetUser', {
-    //   username: localStorage.getItem('user'),
-    //   token: localStorage.getItem('token'),
-    //   role: localStorage.getItem('role')
-    // })
+    this.$store.commit('SetUser', {
+      username: localStorage.getItem('user'),
+      token: localStorage.getItem('token'),
+      role: localStorage.getItem('role')
+    })
     if (!this.$store.state.token) {
       this.$router.push({
         name: 'login',

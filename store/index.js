@@ -3,7 +3,7 @@ export const state = () => ({
   token: null,
   role: null,
   chatInfo: [],
-  redirectUrl: ''
+  redirectUrl: '/'
 })
 
 export const mutations = {
@@ -22,5 +22,11 @@ export const mutations = {
   },
   SetUrl(state, url) {
     state.redirectUrl = url
+  }
+}
+
+export const actions = {
+  nuxtServerInit({ commit }, user) {
+    commit('SetUser', user)
   }
 }

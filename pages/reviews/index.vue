@@ -36,6 +36,9 @@ export default {
     return {
       cafereviews: cafereviews.data
     }
+  },
+  mounted() {
+    this.$store.commit('SetUrl', this.$route.path)
   }
 }
 </script>

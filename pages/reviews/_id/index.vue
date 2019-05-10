@@ -138,6 +138,9 @@ export default {
       rawContent: rawContent
     }
   },
+  mounted() {
+    this.$store.commit('SetUrl', this.$route.path)
+  },
   methods: {
     imgUrl(object) {
       if (object.type === 'fb') {

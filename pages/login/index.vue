@@ -107,7 +107,7 @@ export default {
           token: localStorage.getItem('token'),
           role: localStorage.getItem('role')
         })
-        this.$router.replace(this.$route.params.redirect)
+        this.$router.push(this.$store.state.redirectUrl)
         // eslint-disable-next-line no-unreachable
       } catch (err) {
         // eslint-disable-next-line no-console
