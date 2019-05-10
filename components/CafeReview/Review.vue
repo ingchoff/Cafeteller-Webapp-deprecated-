@@ -21,8 +21,12 @@
     </div>
     <div class="card-body p-1">
       <p class="card-text font-weight-bold">{{ title }}</p>
-      <p class="card-text preview" style="font-size:14px;">
-        {{ excerpt | truncate(100) }}
+      <p
+        v-if="excerpt.blocks.length > 1"
+        class="card-text preview"
+        style="font-size:14px;"
+      >
+        {{ excerpt.blocks[1].data.text | truncate(100) }}
       </p>
     </div>
   </div>
@@ -44,7 +48,7 @@ export default {
       required: true
     },
     excerpt: {
-      type: String,
+      type: Object,
       required: true
     },
     id: {

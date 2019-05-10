@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="button-add">
-      <nuxt-link v-if="$store.state.role === 2" to="/reviews/add">
+      <nuxt-link v-if="$store.state.role === '2'" to="/reviews/add">
         <button type="button" class="btn btn-info">
           <i class="material-icons">
             note_add
@@ -16,7 +16,7 @@
         :id="review.id"
         :key="review.id"
         :title="review.title"
-        :excerpt="review.content"
+        :excerpt="JSON.parse(review.content)"
       />
     </div>
     <br /><br />
@@ -34,8 +34,7 @@ export default {
       `${$axios.defaults.baseURL}api/v1/reviews/`
     )
     return {
-      cafereviews: cafereviews.data,
-      project: 'project'
+      cafereviews: cafereviews.data
     }
   }
 }

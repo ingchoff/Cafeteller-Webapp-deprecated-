@@ -11,6 +11,9 @@
           placeholder="ชื่อผู้ใช้งาน"
         />
       </div>
+      <small v-show="errUser" style="color:red;" class="alert-text thai"
+        >* {{ errUser }} *</small
+      >
       <div class="form-group">
         <label>Password</label>
         <input
@@ -20,6 +23,9 @@
           placeholder="รหัสผ่าน"
         />
       </div>
+      <small v-show="errPass" style="color:red;" class="alert-text thai"
+        >* {{ errPass }} *</small
+      >
       <div class="form-group">
         <label>Email</label>
         <input
@@ -29,6 +35,9 @@
           placeholder="อีเมล"
         />
       </div>
+      <small v-show="errEmail" style="color:red;" class="alert-text thai"
+        >* {{ errEmail }} *</small
+      >
       <div class="form-group">
         <label>First Name</label>
         <input
@@ -38,6 +47,9 @@
           placeholder="ชื่อ"
         />
       </div>
+      <small v-show="errFirst" style="color:red;" class="alert-text thai"
+        >* {{ errFirst }} *</small
+      >
       <div class="form-group">
         <label>Last Name</label>
         <input
@@ -47,6 +59,9 @@
           placeholder="นามสกุล"
         />
       </div>
+      <small v-show="errLast" style="color:red;" class="alert-text thai"
+        >* {{ errLast }} *</small
+      >
       <div class="form-group">
         <label>Role</label>
         <multiselect
@@ -61,9 +76,6 @@
         >
         </multiselect>
       </div>
-      <small v-show="errorMsg" style="color:red;" class="alert-text thai"
-        >* {{ errorMsg }} *</small
-      >
       <div class="myBtn">
         <button type="submit" class="btn">
           Submit
@@ -89,7 +101,11 @@ export default {
       firstname: null,
       lastname: null,
       groups: [],
-      errorMsg: null
+      errUser: '',
+      errPass: '',
+      errEmail: '',
+      errFirst: '',
+      errLast: ''
     }
   },
   methods: {
@@ -110,9 +126,34 @@ export default {
         this.$router.replace('login')
       } catch (err) {
         // eslint-disable-next-line no-console
-        console.log(err.request.response)
-        if (err.request.status === 400) {
-          this.errorMsg = 'โปรดกรอกข้อมูลให้ครบถ้วน'
+        console.log(JSON.parse(err.request.response))
+        var errObj = JSON.parse(err.request.response)
+        if ('username' in errObj) {
+          this.errUser = 'โปรดกรอกชื่อผู้ใช้'
+        } else {
+          this.errUser = ''
+        }
+        if ('password' in errObj && errObj.password[0].includes('null')) {
+          this.errPass = 'โปรดกรอกพาสเวิร์ด'
+        } else if ('password' in errObj && errObj.password[0].includes('8')) {
+          this.errPass = 'พาสเวิร์ดต้องมากกว่า 8 ตัวอักษร'
+        } else {
+          this.errPass = ''
+        }
+        if ('email' in errObj) {
+          this.errEmail = 'โปรดกรอก email'
+        } else {
+          this.errEmail = ''
+        }
+        if ('first_name' in errObj) {
+          this.errFirst = 'โปรดกรอกชื่อ'
+        } else {
+          this.errFirst = ''
+        }
+        if ('last_name' in errObj) {
+          this.errLast = 'โปรดกรอกนามสกุล'
+        } else {
+          this.errLast = ''
         }
       }
     }

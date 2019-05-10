@@ -3,7 +3,7 @@
     <GoogleMap
       ref="map"
       class="myMap"
-      style="width:100%; height: 700px; border-radius:10px;"
+      style="width:100%; height: 600px; border-radius:10px;"
       :km="kmInput"
       :nameinput="value"
     />
@@ -22,7 +22,6 @@
       <multiselect
         v-model="value"
         :options="cafename"
-        :custom-label="nameWithLang"
         placeholder="Select one"
         label="name"
         track-by="name"
@@ -52,8 +51,7 @@ export default {
       `${$axios.defaults.baseURL}api/v1/cafestore/`
     )
     return {
-      cafestore: cafestore.data,
-      project: 'project'
+      cafestore: cafestore.data
     }
   },
   async mounted() {
@@ -86,9 +84,6 @@ export default {
     filterCafeByName() {
       // this.$refs.map.getCafePos()
       this.$refs.map.getCafeName()
-    },
-    nameWithLang({ name }) {
-      return `${name}`
     }
   }
 }

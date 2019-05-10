@@ -100,9 +100,17 @@ export default {
         this.$refs.gmap.$mapPromise.then(map => {
           if (this.markers.length === 0) {
             // eslint-disable-next-line no-undef
-            const myLatLng = new google.maps.LatLng(this.myLat, this.myLng)
-            map.panTo(myLatLng)
-            this.errorMsg = 'ไม่พบร้านกาแฟใกล้เคียง'
+            // const myLatLng = new google.maps.LatLng(this.myLat, this.myLng)
+            // map.panTo(myLatLng)
+            // this.errorMsg = 'ไม่พบร้านกาแฟใกล้เคียง'
+          } else if (this.markers.length === 1) {
+            // eslint-disable-next-line no-undef
+            const bounds = new google.maps.LatLngBounds()
+            for (const m of this.markers) {
+              bounds.extend(m.position)
+            }
+            map.fitBounds(bounds)
+            map.setZoom(14)
           } else {
             // eslint-disable-next-line no-undef
             const bounds = new google.maps.LatLngBounds()
@@ -110,7 +118,7 @@ export default {
               bounds.extend(m.position)
             }
             map.fitBounds(bounds)
-            // this.markers.length = 0
+            // map.setZoom(14)
           }
         })
       } catch (err) {
@@ -196,7 +204,6 @@ export default {
           </div>
         </div>
       `
-      // return pinCard
     }
   }
 }
