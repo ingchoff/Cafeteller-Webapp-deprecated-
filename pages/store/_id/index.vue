@@ -19,12 +19,12 @@
         <div
           class="img"
           :style="{
-            backgroundImage: 'url(' + this.cafestore.logo + ')'
+            backgroundImage: 'url(' + cafestore.logo + ')'
           }"
           style="border-radius:50%"
         />
         <button
-          v-if="this.is_sub === false"
+          v-if="is_sub === false"
           type="button"
           class="btn btn-danger"
           @click="subscribe"
@@ -124,6 +124,7 @@ export default {
           }
         )
       } catch (err) {
+        // eslint-disable-next-line no-console
         console.log(err.request.response)
         this.is_sub = true
       }

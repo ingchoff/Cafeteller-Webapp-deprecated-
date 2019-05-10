@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.3.6",
-    "@vue/eslint-config-standard": "^4.0.0",
     "cross-env": "^5.2.0",
     "nuxt": "^2.4.0",
     "vue-multiselect": "^2.1.6",
@@ -25,6 +24,7 @@
     "@editorjs/header": "^2.2.3",
     "@editorjs/image": "^2.3.0",
     "@nuxtjs/eslint-config": "^0.0.1",
+    "@vue/eslint-config-standard": "^4.0.0",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.15.1",
     "eslint-config-prettier": "^4.1.0",

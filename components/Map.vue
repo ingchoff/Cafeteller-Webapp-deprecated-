@@ -1,4 +1,3 @@
-/* eslint-disable vue/no-v-html */
 <template>
   <gmap-map ref="gmap" :center="{ lat: myLat, lng: myLng }" :zoom="12">
     <gmap-marker

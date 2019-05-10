@@ -113,9 +113,11 @@ export default {
             }
           )
           this.newReview = newReview.data
+          // eslint-disable-next-line no-console
           console.log(this.newReview)
           this.$router.push({ path: `/reviews/${this.newReview.id}` })
         } catch (err) {
+          // eslint-disable-next-line no-console
           console.log(err.request.response)
           alert('error')
         }
