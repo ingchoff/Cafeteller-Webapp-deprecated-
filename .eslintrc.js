@@ -8,8 +8,8 @@ module.exports = {
     parser: 'babel-eslint'
   },
   extends: [
-    'plugin:vue/essential',
-    '@vue/standard',
+    '@nuxtjs',
+    'plugin:nuxt/recommended',
     'plugin:prettier/recommended',
     'prettier',
     'prettier/vue'
@@ -19,5 +19,7 @@ module.exports = {
   ],
   // add your custom rules here
   rules: {
+    "no-console": "off",
+    "vue/no-v-html": "off",
   }
 }
