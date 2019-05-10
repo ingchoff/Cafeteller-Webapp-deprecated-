@@ -59,10 +59,25 @@ export default {
         )
         localStorage.setItem('token', ' ' + user.data.token)
         localStorage.setItem('user', this.username)
-        location.replace('/')
       } catch (err) {
         // eslint-disable-next-line no-console
         console.log(err.response)
+      }
+      try {
+        const userrole = await this.$axios.get(
+          `${this.$axios.defaults.baseURL}api/v1/myuser/`,
+          {
+            headers: {
+              Authorization: 'token' + localStorage.getItem('token')
+            }
+          }
+        )
+        localStorage.setItem('role', userrole.data[0].groups[0])
+        location.replace('/')
+        // eslint-disable-next-line no-unreachable
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.log(err.request.response)
       }
     }
   }

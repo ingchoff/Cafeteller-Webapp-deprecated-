@@ -149,6 +149,7 @@ export default {
                 bounds.extend(m.position)
               }
               map.fitBounds(bounds)
+              map.setZoom(14)
             }
             // this.markers.length = 0
           })

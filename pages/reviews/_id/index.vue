@@ -23,7 +23,7 @@
               </li>
               <nuxt-link
                 :to="{ name: 'store-id', params: { id: cafestore.id } }"
-                class="register"
+                class="store-btn"
               >
                 <a>Our Store Page</a>
               </nuxt-link>
@@ -191,7 +191,7 @@ export default {
   display: flex;
   justify-content: center;
 }
-.register {
+.store-btn {
   width: 10rem;
   background: #fdfd96;
   /* padding: 10px 40px 10px 40px; */
@@ -199,13 +199,13 @@ export default {
   color: #fff;
   /* margin-left: 5px; */
 }
-.register {
+.store-btn {
   padding: 5px;
   text-decoration: none;
   color: black;
 }
-.register a:link,
-.register a:hover {
+.store-btn a:link,
+.store-btn a:hover {
   color: black;
   text-decoration: none;
 }

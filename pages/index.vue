@@ -62,41 +62,17 @@ export default {
         name: this.cafestore[i].name
       })
     }
-    this.$store.commit('SetUser', {
-      username: localStorage.getItem('user'),
-      token: localStorage.getItem('token'),
-      role: localStorage.getItem('role')
-    })
+    console.log(localStorage.getItem('token'))
     try {
       const chatToken = await this.$axios.get(
         `${this.$axios.defaults.baseURL}api/v1/get/token`,
         {
           headers: {
-            Authorization: 'token' + this.$store.state.token
+            Authorization: 'token' + localStorage.getItem('token')
           }
         }
       )
-      this.$store.commit('SetChat', chatToken)
-      // eslint-disable-next-line no-unreachable
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log(err.request.response)
-    }
-    try {
-      const userrole = await this.$axios.get(
-        `${this.$axios.defaults.baseURL}api/v1/myuser/`,
-        {
-          headers: {
-            Authorization: 'token' + this.$store.state.token
-          }
-        }
-      )
-      localStorage.setItem('role', userrole.data[0].groups[0])
-      this.$store.commit('SetUser', {
-        username: localStorage.getItem('user'),
-        token: localStorage.getItem('token'),
-        role: localStorage.getItem('role')
-      })
+      this.$store.commit('SetChat', chatToken.data)
       // eslint-disable-next-line no-unreachable
     } catch (err) {
       // eslint-disable-next-line no-console

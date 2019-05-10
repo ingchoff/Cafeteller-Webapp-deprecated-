@@ -19,8 +19,7 @@
         <div
           class="img"
           :style="{
-            backgroundImage:
-              'url(https://mdbootstrap.com/img/Photos/Others/laptop-sm.jpg)'
+            backgroundImage: 'url(' + this.cafestore.logo + ')'
           }"
           style="border-radius:50%"
         />

@@ -107,6 +107,7 @@ export default {
             groups: [this.value.group]
           }
         )
+        this.$router.replace('login')
       } catch (err) {
         // eslint-disable-next-line no-console
         console.log(err.request.response)
@@ -114,7 +115,6 @@ export default {
           this.errorMsg = 'โปรดกรอกข้อมูลให้ครบถ้วน'
         }
       }
-      this.$router.replace('login')
     }
   }
 }

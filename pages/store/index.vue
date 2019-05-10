@@ -7,6 +7,7 @@
         :key="store.id"
         :title="store.name"
         :excerpt="store.description"
+        :img="store.logo"
       />
     </div>
     <br /><br /><br /><br /><br />
