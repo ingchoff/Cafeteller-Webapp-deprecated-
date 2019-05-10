@@ -1,25 +1,14 @@
 <template>
   <div class="ce-block__content">
-    <h2>Add New Review</h2>
-    <ol>
-      <li>ใส่บล็อกแรกเป็น Title</li>
-      <li>
-        จำเป็นต้องเลือกคาเฟ่ก่อน ถ้าไม่มีคาเฟ่
-        <a href="#">สร้างคาเฟ่</a>
-      </li>
-      <li>
-        เลือกคาเฟ่
-        <Multiselect v-model="value" :options="cafeName"></Multiselect>
-      </li>
-    </ol>
-    <h4>Add Text by clicking space below</h4>
-    <h6>----------------------------</h6>
+    <h2>Edit Review</h2>
     <div id="editorjs"></div>
-    <div class="d-flex justify-content-center">
+    <div class="d-flex align-items-center flex-column">
       <button @click="editorSave" type="button" class="btn btn-default save">
         Save
       </button>
     </div>
+    เลือกคาเฟ่
+    <Multiselect v-model="title" :options="cafeName"></Multiselect>
   </div>
 </template>
 
@@ -30,18 +19,19 @@ export default {
   components: {
     Multiselect
   },
-  data() {
-    return {
-      value: ''
-    }
-  },
   async asyncData({ params, $axios }) {
     const cafestore = await $axios.get(
       `${$axios.defaults.baseURL}api/v1/cafestore/`
     )
+    const reviewData = await $axios.get(
+      `${$axios.defaults.baseURL}api/v1/reviews/${params.id}/`
+    )
     return {
-      cafestore: cafestore.data,
-      project: 'project'
+      title: cafestore.data.find(cafe => {
+        return cafe.id === reviewData.data.store
+      }).name,
+      reviewData: JSON.parse(reviewData.data.content),
+      cafestore: cafestore.data
     }
   },
   computed: {
@@ -76,6 +66,8 @@ export default {
           }
         }
       },
+      autofocus: true,
+      data: this.reviewData,
       onReady: () => {
         this.$el.querySelector('.codex-editor__redactor').style.paddingBottom =
           '50px'
@@ -86,7 +78,7 @@ export default {
     editorSave() {
       // get selected store id
       let selected = this.cafestore.filter(cafe => {
-        return cafe.name === this.value
+        return cafe.name === this.title
       })
       if (selected.length > 0) {
         selected = selected[0]
@@ -98,8 +90,10 @@ export default {
         try {
           const title = data['blocks'][0]['data']['text']
           const content = JSON.stringify(data)
-          const newReview = await this.$axios.post(
-            `${this.$axios.defaults.baseURL}api/v1/reviews/`,
+          const newReview = await this.$axios.patch(
+            `${this.$axios.defaults.baseURL}api/v1/reviews/${
+              this.$route.params.id
+            }/`,
             {
               title: title,
               content: content,
@@ -124,7 +118,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .save {
   border-width: 1px;
   border-color: gray;

@@ -107,6 +107,12 @@ export default {
           rawContent += `<img style="margin-bottom: 10px; max-width: 650px;" src="${
             block.data.file.url
           }">`
+          if (block.data.caption) {
+            rawContent += `
+            <div class="d-flex justify-content-center" style="font-style: italic;">
+              ${block.data.caption}
+            </div>`
+          }
           break
         default:
           // code block
