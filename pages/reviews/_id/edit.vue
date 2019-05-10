@@ -3,7 +3,7 @@
     <h2>Edit Review</h2>
     <div id="editorjs"></div>
     <div class="d-flex align-items-center flex-column">
-      <button @click="editorSave" type="button" class="btn btn-default save">
+      <button type="button" class="btn btn-default save" @click="editorSave">
         Save
       </button>
     </div>
@@ -19,6 +19,13 @@ export default {
   components: {
     Multiselect
   },
+  computed: {
+    cafeName() {
+      return this.cafestore.map(cafe => {
+        return cafe.name
+      })
+    }
+  },
   async asyncData({ params, $axios }) {
     const cafestore = await $axios.get(
       `${$axios.defaults.baseURL}api/v1/cafestore/`
@@ -32,13 +39,6 @@ export default {
       }).name,
       reviewData: JSON.parse(reviewData.data.content),
       cafestore: cafestore.data
-    }
-  },
-  computed: {
-    cafeName() {
-      return this.cafestore.map(cafe => {
-        return cafe.name
-      })
     }
   },
   mounted() {
@@ -88,7 +88,7 @@ export default {
       }
       this.editor.save().then(async data => {
         try {
-          const title = data['blocks'][0]['data']['text']
+          const title = data.blocks[0].data.text
           const content = JSON.stringify(data)
           const newReview = await this.$axios.patch(
             `${this.$axios.defaults.baseURL}api/v1/reviews/${

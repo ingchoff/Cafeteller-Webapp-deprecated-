@@ -1,9 +1,6 @@
 <template>
   <div class="container">
-    <div class="block-content">
-      <div v-html="rawContent"></div>
-    </div>
-
+    <div class="block-content" v-html="rawContent"></div>
     <div class="row">
       <div class="col">
         <div class="card" style="width: 65%;">
@@ -93,12 +90,12 @@ export default {
 
     let rawContent = ''
     const objContent = JSON.parse(cafereviews.content)
-    objContent['blocks'].forEach(block => {
-      switch (block['type']) {
+    objContent.blocks.forEach(block => {
+      switch (block.type) {
         case 'header':
-          rawContent += `<h${block.data['level']}>
+          rawContent += `<h${block.data.level}>
             ${block.data.text}
-          </h${block.data['level']}>`
+          </h${block.data.level}>`
           break
         case 'paragraph':
           rawContent += `<p>${block.data.text}</p>`

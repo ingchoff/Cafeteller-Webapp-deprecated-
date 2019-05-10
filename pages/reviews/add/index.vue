@@ -16,7 +16,7 @@
     <h6>----------------------------</h6>
     <div id="editorjs"></div>
     <div class="d-flex justify-content-center">
-      <button @click="editorSave" type="button" class="btn btn-default save">
+      <button type="button" class="btn btn-default save" @click="editorSave">
         Save
       </button>
     </div>
@@ -35,6 +35,13 @@ export default {
       value: ''
     }
   },
+  computed: {
+    cafeName() {
+      return this.cafestore.map(cafe => {
+        return cafe.name
+      })
+    }
+  },
   async asyncData({ params, $axios }) {
     const cafestore = await $axios.get(
       `${$axios.defaults.baseURL}api/v1/cafestore/`
@@ -42,13 +49,6 @@ export default {
     return {
       cafestore: cafestore.data,
       project: 'project'
-    }
-  },
-  computed: {
-    cafeName() {
-      return this.cafestore.map(cafe => {
-        return cafe.name
-      })
     }
   },
   mounted() {
@@ -96,7 +96,7 @@ export default {
       }
       this.editor.save().then(async data => {
         try {
-          const title = data['blocks'][0]['data']['text']
+          const title = data.blocks[0].data.text
           const content = JSON.stringify(data)
           const newReview = await this.$axios.post(
             `${this.$axios.defaults.baseURL}api/v1/reviews/`,
@@ -112,9 +112,11 @@ export default {
             }
           )
           this.newReview = newReview.data
+          // eslint-disable-next-line no-console
           console.log(this.newReview)
           this.$router.push({ path: `/reviews/${this.newReview.id}` })
         } catch (err) {
+          // eslint-disable-next-line no-console
           console.log(err.request.response)
           alert('error')
         }
