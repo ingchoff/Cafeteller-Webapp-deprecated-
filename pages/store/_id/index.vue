@@ -75,6 +75,12 @@ export default {
   components: {
     GoogleMap
   },
+  data() {
+    return {
+      is_sub: false,
+      token: ''
+    }
+  },
   async asyncData({ params, $axios }) {
     const cafestore = await $axios.get(
       `${$axios.defaults.baseURL}api/v1/cafestore/${params.id}`
@@ -148,12 +154,6 @@ export default {
                     src="https://static.wixstatic.com/media/01c3aff52f2a4dffa526d7a9843d46ea.png/v1/fill/w_25,h_25,al_c,q_80,usm_0.66_1.00_0.01/01c3aff52f2a4dffa526d7a9843d46ea.webp"
                 />`
       }
-    }
-  },
-  data() {
-    return {
-      is_sub: false,
-      token: ''
     }
   }
 }

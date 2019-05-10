@@ -1,6 +1,19 @@
 <template>
   <div class="container">
     <div class="block-content">
+      <div class="button-add">
+        <nuxt-link
+          v-if="$store.state.role === '2'"
+          :to="{ name: 'reviews-id-edit', params: { id: cafereviews.id } }"
+        >
+          <button type="button" class="btn btn-info">
+            <i class="material-icons">
+              border_color
+            </i>
+            Edit Review
+          </button>
+        </nuxt-link>
+      </div>
       <div v-html="rawContent"></div>
     </div>
 
@@ -93,12 +106,12 @@ export default {
 
     let rawContent = ''
     const objContent = JSON.parse(cafereviews.content)
-    objContent['blocks'].forEach(block => {
-      switch (block['type']) {
+    objContent.blocks.forEach(block => {
+      switch (block.type) {
         case 'header':
-          rawContent += `<h${block.data['level']}>
+          rawContent += `<h${block.data.level}>
             ${block.data.text}
-          </h${block.data['level']}>`
+          </h${block.data.level}>`
           break
         case 'paragraph':
           rawContent += `<p>${block.data.text}</p>`
@@ -158,6 +171,14 @@ export default {
 </script>
 
 <style scoped>
+.btn {
+  padding: 5px;
+}
+.button-add {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px;
+}
 .block-content {
   /* position: relative; */
   max-width: 650px;

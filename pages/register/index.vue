@@ -127,7 +127,7 @@ export default {
       } catch (err) {
         // eslint-disable-next-line no-console
         console.log(JSON.parse(err.request.response))
-        var errObj = JSON.parse(err.request.response)
+        const errObj = JSON.parse(err.request.response)
         if ('username' in errObj) {
           this.errUser = 'โปรดกรอกชื่อผู้ใช้'
         } else {

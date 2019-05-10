@@ -49,24 +49,6 @@ export default {
   justify-content: flex-end;
   padding: 8px;
 }
-.add-btn {
-  width: 10rem;
-  background: #fdfd96;
-  /* padding: 10px 40px 10px 40px; */
-  border-radius: 20px;
-  color: #fff;
-  /* margin-left: 5px; */
-}
-.add-btn {
-  padding: 5px;
-  text-decoration: none;
-  color: black;
-}
-.add-btn a:link,
-.add-btn a:hover {
-  color: black;
-  text-decoration: none;
-}
 @media (min-width: 1200px) {
   .container {
     max-width: 1140px;

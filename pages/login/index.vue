@@ -74,7 +74,7 @@ export default {
       } catch (err) {
         // eslint-disable-next-line no-console
         console.log(err.response.data)
-        var errObj = err.response.data
+        const errObj = err.response.data
         if ('username' in errObj) {
           this.errUser = 'โปรดใส่ชื่อผู้ใช้'
         } else {

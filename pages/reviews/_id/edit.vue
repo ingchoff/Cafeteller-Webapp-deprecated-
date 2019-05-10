@@ -1,9 +1,22 @@
 <template>
   <div class="ce-block__content">
+    <div class="button-add">
+      <nuxt-link
+        v-if="$store.state.role === '2'"
+        :to="{ name: 'reviews-id', params: { id: $route.params.id } }"
+      >
+        <button type="button" class="btn btn-danger">
+          <i class="material-icons">
+            arrow_back
+          </i>
+          Cancel
+        </button>
+      </nuxt-link>
+    </div>
     <h2>Edit Review</h2>
     <div id="editorjs"></div>
     <div class="d-flex align-items-center flex-column">
-      <button @click="editorSave" type="button" class="btn btn-default save">
+      <button class="btn btn-default save" type="button" @click="editorSave">
         Save
       </button>
     </div>
@@ -19,6 +32,13 @@ export default {
   components: {
     Multiselect
   },
+  computed: {
+    cafeName() {
+      return this.cafestore.map(cafe => {
+        return cafe.name
+      })
+    }
+  },
   async asyncData({ params, $axios }) {
     const cafestore = await $axios.get(
       `${$axios.defaults.baseURL}api/v1/cafestore/`
@@ -32,13 +52,6 @@ export default {
       }).name,
       reviewData: JSON.parse(reviewData.data.content),
       cafestore: cafestore.data
-    }
-  },
-  computed: {
-    cafeName() {
-      return this.cafestore.map(cafe => {
-        return cafe.name
-      })
     }
   },
   mounted() {
@@ -88,7 +101,7 @@ export default {
       }
       this.editor.save().then(async data => {
         try {
-          const title = data['blocks'][0]['data']['text']
+          const title = data.blocks[0].data.text
           const content = JSON.stringify(data)
           const newReview = await this.$axios.patch(
             `${this.$axios.defaults.baseURL}api/v1/reviews/${
@@ -118,7 +131,15 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.btn {
+  padding: 5px;
+}
+.button-add {
+  display: flex;
+  justify-content: flex-start;
+  padding: 8px;
+}
 .save {
   border-width: 1px;
   border-color: gray;

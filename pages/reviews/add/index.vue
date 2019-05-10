@@ -5,7 +5,7 @@
       <li>ใส่บล็อกแรกเป็น Title</li>
       <li>
         จำเป็นต้องเลือกคาเฟ่ก่อน ถ้าไม่มีคาเฟ่
-        <a href="#">สร้างคาเฟ่</a>
+        <nuxt-link to="/store/add"><a href="#">สร้างคาเฟ่</a></nuxt-link>
       </li>
       <li>
         เลือกคาเฟ่
@@ -16,7 +16,7 @@
     <h6>----------------------------</h6>
     <div id="editorjs"></div>
     <div class="d-flex justify-content-center">
-      <button @click="editorSave" type="button" class="btn btn-default save">
+      <button type="button" class="btn btn-default save" @click="editorSave">
         Save
       </button>
     </div>
@@ -35,6 +35,13 @@ export default {
       value: ''
     }
   },
+  computed: {
+    cafeName() {
+      return this.cafestore.map(cafe => {
+        return cafe.name
+      })
+    }
+  },
   async asyncData({ params, $axios }) {
     const cafestore = await $axios.get(
       `${$axios.defaults.baseURL}api/v1/cafestore/`
@@ -42,13 +49,6 @@ export default {
     return {
       cafestore: cafestore.data,
       project: 'project'
-    }
-  },
-  computed: {
-    cafeName() {
-      return this.cafestore.map(cafe => {
-        return cafe.name
-      })
     }
   },
   mounted() {
@@ -96,7 +96,7 @@ export default {
       }
       this.editor.save().then(async data => {
         try {
-          const title = data['blocks'][0]['data']['text']
+          const title = data.blocks[0].data.text
           const content = JSON.stringify(data)
           const newReview = await this.$axios.post(
             `${this.$axios.defaults.baseURL}api/v1/reviews/`,

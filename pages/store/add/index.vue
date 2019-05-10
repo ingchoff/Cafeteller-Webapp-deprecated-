@@ -7,11 +7,11 @@
         {{ error.name }}
       </div>
       <input
+        id="title"
+        v-model="title"
         type="text"
         class="form-control"
-        id="title"
         placeholder="Placeholder Cafe"
-        v-model="title"
       />
     </div>
 
@@ -21,9 +21,9 @@
         {{ error.description }}
       </div>
       <textarea
+        id="description"
         v-model="description"
         class="form-control"
-        id="description"
         rows="3"
       ></textarea>
     </div>
@@ -34,10 +34,10 @@
         {{ error.logo }}
       </div>
       <input
+        ref="logo"
         type="file"
         accept="image/*"
         class="form-control-file"
-        ref="logo"
         @change="handleFileUpload"
       />
     </div>
@@ -79,10 +79,10 @@
     />
 
     <button
-      @click="sendToBackend"
       style="margin-top: 10px"
       type="button"
       class="btn btn-light"
+      @click="sendToBackend"
     >
       Submit
     </button>
@@ -95,19 +95,6 @@ import Multiselect from 'vue-multiselect'
 export default {
   components: {
     Multiselect
-  },
-  mounted() {
-    this.$refs.mymap.$mapPromise.then(map => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-          this.mapStartLocation['lat'] = position.coords.latitude
-          this.mapStartLocation['lng'] = position.coords.longitude
-          map.panTo(this.mapStartLocation)
-          this.coordinates = this.mapStartLocation
-          this.getAddress()
-        })
-      }
-    })
   },
   data() {
     return {
@@ -138,13 +125,33 @@ export default {
       error: null
     }
   },
+  computed: {
+    styleName() {
+      return this.styles.map(style => {
+        return { name: style.title, code: style.title }
+      })
+    }
+  },
   async asyncData({ params, $axios }) {
-    let style = await $axios.get(
+    const style = await $axios.get(
       `${$axios.defaults.baseURL}api/v1/cafestore/styles/`
     )
     return {
       styles: style.data
     }
+  },
+  mounted() {
+    this.$refs.mymap.$mapPromise.then(map => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+          this.mapStartLocation.lat = position.coords.latitude
+          this.mapStartLocation.lng = position.coords.longitude
+          map.panTo(this.mapStartLocation)
+          this.coordinates = this.mapStartLocation
+          this.getAddress()
+        })
+      }
+    })
   },
   methods: {
     async updateCoordinates(location) {
@@ -168,11 +175,11 @@ export default {
       await this.getAddress()
     },
     async getAddress() {
-      let latLng = this.coordinates.lat + ',' + this.coordinates.lng
-      let key = 'AIzaSyA5LMLVAp3KulY-bUsYigDdN1OiWlnQQ_A'
-      let api = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latLng}&key=${key}`
+      const latLng = this.coordinates.lat + ',' + this.coordinates.lng
+      const key = 'AIzaSyA5LMLVAp3KulY-bUsYigDdN1OiWlnQQ_A'
+      const api = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latLng}&key=${key}`
       console.log(api)
-      let address = await this.$axios.get(api)
+      const address = await this.$axios.get(api)
       this.results = address.data.results[0].formatted_address
     },
     addTag(newTag) {
@@ -182,7 +189,7 @@ export default {
       this.logo = this.$refs.logo.files[0]
     },
     sendToBackend() {
-      let data = new FormData()
+      const data = new FormData()
       data.append('name', this.title)
       data.append('description', this.description)
       data.append('address', this.results)
@@ -197,8 +204,8 @@ export default {
           }
         })
         .then(store => {
-          let update = {}
-          update['styles'] = this.stylesList.map(st => {
+          const update = {}
+          update.styles = this.stylesList.map(st => {
             return st.name
           })
           console.log(update)
@@ -227,13 +234,6 @@ export default {
           alert('error please check field!')
           this.error = JSON.parse(err.request.response)
         })
-    }
-  },
-  computed: {
-    styleName() {
-      return this.styles.map(style => {
-        return { name: style.title, code: style.title }
-      })
     }
   }
 }
