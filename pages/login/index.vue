@@ -101,7 +101,13 @@ export default {
           }
         )
         localStorage.setItem('role', userrole.data[0].groups[0])
-        location.replace('/')
+        console.log(userrole.data)
+        this.$store.commit('SetUser', {
+          username: userrole.data[0].username,
+          token: localStorage.getItem('token'),
+          role: localStorage.getItem('role')
+        })
+        this.$router.replace(this.$route.params.redirect)
         // eslint-disable-next-line no-unreachable
       } catch (err) {
         // eslint-disable-next-line no-console

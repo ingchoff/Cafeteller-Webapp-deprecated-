@@ -1,5 +1,6 @@
-export default function({ store, redirect }) {
-  if (store.state.token === null) {
-    return redirect('/login')
-  }
-}
+// export default function({ store, redirect }) {
+//   if (store.state.role !== '2') {
+//     return redirect('/login')
+//   }
+// }
+// check Role <<

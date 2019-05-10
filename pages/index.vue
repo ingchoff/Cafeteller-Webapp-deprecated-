@@ -60,7 +60,6 @@ export default {
         name: this.cafestore[i].name
       })
     }
-    console.log(localStorage.getItem('token'))
     try {
       const chatToken = await this.$axios.get(
         `${this.$axios.defaults.baseURL}api/v1/get/token`,

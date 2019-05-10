@@ -53,7 +53,8 @@ export default {
     },
     img: {
       type: String,
-      required: false
+      required: false,
+      default: '/store-img.png'
     }
   },
   data() {

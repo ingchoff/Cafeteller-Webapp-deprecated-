@@ -86,22 +86,26 @@ export default {
       `${$axios.defaults.baseURL}api/v1/cafestore/${params.id}`
     )
     return {
-      cafestore: cafestore.data,
-      project: 'project'
+      cafestore: cafestore.data
     }
   },
   async mounted() {
-    // const myuser = await this.$axios.get(
-    //   `${this.$axios.defaults.baseURL}api/v1/myuser/`,
-    //   {
-    //     headers: {
-    //       Authorization: 'token' + this.$store.state.token
-    //     }
-    //   }
-    // )
-    // return {
-    //   myuser: myuser.data
-    // }
+    try {
+      const myuser = await this.$axios.get(
+        `${this.$axios.defaults.baseURL}api/v1/myuser/`,
+        {
+          headers: {
+            Authorization: 'token' + this.$store.state.token
+          }
+        }
+      )
+      console.log(myuser.data)
+      return {
+        myuser: myuser.data
+      }
+    } catch (err) {
+      console.log(err.request.response)
+    }
     // for (let i = 0; i < this.cafestore.subscriber.length; i++) {
     //   if (this.cafestore.subscriber[i] === myuser.data.id) {
     //     this.is_sub = true

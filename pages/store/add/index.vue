@@ -93,7 +93,7 @@
 import Multiselect from 'vue-multiselect'
 
 export default {
-  middleware: 'authenticated',
+  // middleware: 'authenticated',
   components: {
     Multiselect
   },
@@ -128,6 +128,15 @@ export default {
     }
   },
   mounted() {
+    if (!localStorage.getItem('token')) {
+      this.$router.push({ path: '/login' })
+    }
+    this.$store.commit('SetUser', {
+      username: localStorage.getItem('user'),
+      token: localStorage.getItem('token'),
+      role: localStorage.getItem('role')
+    })
+    this.$store.commit('SetUrl', this.$route.path)
     this.$refs.mymap.$mapPromise.then(map => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
