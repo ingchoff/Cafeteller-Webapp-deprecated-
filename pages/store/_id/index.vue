@@ -45,7 +45,7 @@
         <hr />
         <ul class="social">
           <li v-for="url in cafestore.contracts" :key="url.id">
-            <a :href="'https://' + url.url">
+            <a :href="url.url">
               <div v-html="imgUrl(url)"></div>
             </a>
           </li>
@@ -151,7 +151,7 @@ export default {
                     class="img-social"
                     data-type="image"
                     itemprop="image"
-                    style="width: 20px; height: 20px; object-fit: cover;"
+                    style="width: 50px; height: 50px; object-fit: cover;"
                     src="https://static.wixstatic.com/media/01c3aff52f2a4dffa526d7a9843d46ea.png/v1/fill/w_25,h_25,al_c,q_80,usm_0.66_1.00_0.01/01c3aff52f2a4dffa526d7a9843d46ea.webp"
                 />`
       }

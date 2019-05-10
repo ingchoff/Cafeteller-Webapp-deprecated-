@@ -11,6 +11,9 @@
           placeholder="Username"
         />
       </div>
+      <small v-show="errUser" style="color:red;" class="alert-text thai"
+        >* {{ errUser }} *</small
+      >
       <div class="form-group">
         <label for="exampleInputPassword1">Password</label>
         <input
@@ -20,6 +23,12 @@
           placeholder="Password"
         />
       </div>
+      <small v-show="errPass" style="color:red;" class="alert-text thai"
+        >* {{ errPass }} *</small
+      >
+      <small v-show="errLog" style="color:red;" class="alert-text thai"
+        >* {{ errLog }} *</small
+      >
       <div class="row">
         <div class="col">
           <button type="submit" class="btn">
@@ -43,7 +52,10 @@ export default {
     return {
       username: '',
       password: '',
-      token: ''
+      token: '',
+      errUser: '',
+      errPass: '',
+      errLog: ''
     }
   },
   methods: {
@@ -61,7 +73,23 @@ export default {
         localStorage.setItem('user', this.username)
       } catch (err) {
         // eslint-disable-next-line no-console
-        console.log(err.response)
+        console.log(err.response.data)
+        const errObj = err.response.data
+        if ('username' in errObj) {
+          this.errUser = 'โปรดใส่ชื่อผู้ใช้'
+        } else {
+          this.errUser = ''
+        }
+        if ('password' in errObj) {
+          this.errPass = 'โปรดใส่พาสเวิร์ด'
+        } else {
+          this.errPass = ''
+        }
+        if ('non_field_errors' in errObj) {
+          this.errLog = 'ชื่อผู้ใช้ หรือ รหัสผ่านไม่ถูกต้อง'
+        } else {
+          this.errLog = ''
+        }
       }
       try {
         const userrole = await this.$axios.get(

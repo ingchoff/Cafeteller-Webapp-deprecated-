@@ -1,9 +1,22 @@
 <template>
   <div class="ce-block__content">
+    <div class="button-add">
+      <nuxt-link
+        v-if="$store.state.role === '2'"
+        :to="{ name: 'reviews-id', params: { id: $route.params.id } }"
+      >
+        <button type="button" class="btn btn-danger">
+          <i class="material-icons">
+            arrow_back
+          </i>
+          Cancel
+        </button>
+      </nuxt-link>
+    </div>
     <h2>Edit Review</h2>
     <div id="editorjs"></div>
     <div class="d-flex align-items-center flex-column">
-      <button type="button" class="btn btn-default save" @click="editorSave">
+      <button class="btn btn-default save" type="button" @click="editorSave">
         Save
       </button>
     </div>
@@ -118,7 +131,15 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.btn {
+  padding: 5px;
+}
+.button-add {
+  display: flex;
+  justify-content: flex-start;
+  padding: 8px;
+}
 .save {
   border-width: 1px;
   border-color: gray;

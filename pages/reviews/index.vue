@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="button-add">
-      <nuxt-link v-if="$store.state.role === 2" to="/reviews/add">
+      <nuxt-link v-if="$store.state.role === '2'" to="/reviews/add">
         <button type="button" class="btn btn-info">
           <i class="material-icons">
             note_add
@@ -16,7 +16,7 @@
         :id="review.id"
         :key="review.id"
         :title="review.title"
-        :excerpt="review.content"
+        :excerpt="JSON.parse(review.content)"
       />
     </div>
     <br /><br />
@@ -34,8 +34,7 @@ export default {
       `${$axios.defaults.baseURL}api/v1/reviews/`
     )
     return {
-      cafereviews: cafereviews.data,
-      project: 'project'
+      cafereviews: cafereviews.data
     }
   }
 }
@@ -49,24 +48,6 @@ export default {
   display: flex;
   justify-content: flex-end;
   padding: 8px;
-}
-.add-btn {
-  width: 10rem;
-  background: #fdfd96;
-  /* padding: 10px 40px 10px 40px; */
-  border-radius: 20px;
-  color: #fff;
-  /* margin-left: 5px; */
-}
-.add-btn {
-  padding: 5px;
-  text-decoration: none;
-  color: black;
-}
-.add-btn a:link,
-.add-btn a:hover {
-  color: black;
-  text-decoration: none;
 }
 @media (min-width: 1200px) {
   .container {

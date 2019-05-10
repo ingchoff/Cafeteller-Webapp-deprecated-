@@ -1,5 +1,18 @@
 <template>
   <div class="container">
+    <div class="button-add">
+      <nuxt-link
+        v-if="$store.state.role === '2' || $store.state.role === '1'"
+        to="/store/add"
+      >
+        <button type="button" class="btn btn-info">
+          <i class="material-icons">
+            note_add
+          </i>
+          Create Store
+        </button>
+      </nuxt-link>
+    </div>
     <div class="row">
       <Store
         v-for="store in cafestore"
@@ -25,14 +38,21 @@ export default {
       `${$axios.defaults.baseURL}api/v1/cafestore/`
     )
     return {
-      cafestore: cafestore.data,
-      project: 'project'
+      cafestore: cafestore.data
     }
   }
 }
 </script>
 
 <style scoped>
+.btn {
+  padding: 5px;
+}
+.button-add {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px;
+}
 @media (min-width: 1200px) {
   .container {
     max-width: 1140px;
