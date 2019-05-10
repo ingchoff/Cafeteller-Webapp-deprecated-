@@ -2,7 +2,8 @@ export const state = () => ({
   username: null,
   token: null,
   role: null,
-  chatInfo: []
+  chatInfo: [],
+  redirectUrl: ''
 })
 
 export const mutations = {
@@ -18,5 +19,8 @@ export const mutations = {
   },
   SetChat(state, chat) {
     state.chatInfo = chat
+  },
+  SetUrl(state, url) {
+    state.redirectUrl = url
   }
 }
