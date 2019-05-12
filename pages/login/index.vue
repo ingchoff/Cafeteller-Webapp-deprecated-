@@ -70,7 +70,6 @@ export default {
           }
         )
         localStorage.setItem('token', ' ' + user.data.token)
-        localStorage.setItem('user', this.username)
       } catch (err) {
         // eslint-disable-next-line no-console
         console.log(err.response.data)
@@ -100,9 +99,12 @@ export default {
             }
           }
         )
+        localStorage.setItem('user', userrole.data[0].username)
         localStorage.setItem('role', userrole.data[0].groups[0])
+        localStorage.setItem('uid', userrole.data[0].id)
         console.log(userrole.data)
         this.$store.commit('SetUser', {
+          id: userrole.data[0].id,
           username: userrole.data[0].username,
           token: localStorage.getItem('token'),
           role: localStorage.getItem('role')

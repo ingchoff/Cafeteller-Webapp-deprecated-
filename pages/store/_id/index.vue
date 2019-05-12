@@ -4,18 +4,12 @@
       <div style="font-size:36px;">
         {{ cafestore.name }}
         <span class="badge badge-info ml-3">
-          {{ cafestore.subscriber.length }} Subscriber</span
+          {{ $store.state.subscriber }} Subscriber</span
         >
       </div>
     </div>
     <div class="row">
       <div class="col content-left p-3">
-        <!-- <div
-          v-if="cafestore.logo !== ''"
-          class="img"
-          :style="{ backgroundImage: 'url(' + cafestore.logo + ')' }"
-          style="border-top-left-radius:8px;border-top-right-radius:8px;"
-        /> -->
         <div
           class="img"
           :style="{
@@ -23,17 +17,19 @@
           }"
           style="border-radius:50%"
         />
-        <button
-          v-if="is_sub === false"
-          type="button"
-          class="btn btn-danger"
-          @click="subscribe"
-        >
-          Subscribe +
-        </button>
-        <button v-else type="button" class="btn btn-secondary">
-          Subscribed
-        </button>
+        <div v-if="this.$store.state.role === '3'" class="btn-sub">
+          <button
+            v-if="is_sub === false"
+            type="button"
+            class="btn btn-danger"
+            @click="subscribe"
+          >
+            Subscribe +
+          </button>
+          <button v-else type="button" class="btn btn-secondary disabled">
+            Subscribed
+          </button>
+        </div>
         <hr class="my-4" />
         <div class="description">" {{ cafestore.description }} "</div>
       </div>
@@ -77,43 +73,36 @@ export default {
   },
   data() {
     return {
-      is_sub: false,
-      token: ''
+      is_sub: false
     }
   },
-  async asyncData({ params, $axios }) {
+  async asyncData({ params, $axios, store }) {
     const cafestore = await $axios.get(
       `${$axios.defaults.baseURL}api/v1/cafestore/${params.id}`
     )
+    // const myuser = await $axios.get(
+    //   `${$axios.defaults.baseURL}api/v1/myuser/`,
+    //   {
+    //     headers: {
+    //       Authorization: 'token' + store.state.token
+    //     }
+    //   }
+    // )
+    // console.log(myuser.data[0].id)
     return {
       cafestore: cafestore.data
+      // myuser: myuser.data
     }
   },
-  async mounted() {
+  mounted() {
+    this.$store.commit('GetSub', this.cafestore.subscriber.length)
     this.$store.commit('SetUrl', this.$route.path)
-    try {
-      const myuser = await this.$axios.get(
-        `${this.$axios.defaults.baseURL}api/v1/myuser/`,
-        {
-          headers: {
-            Authorization: 'token' + this.$store.state.token
-          }
-        }
-      )
-      console.log(myuser.data)
-      return {
-        myuser: myuser.data
-      }
-    } catch (err) {
-      console.log(err.request.response)
+    if (this.cafestore.subscriber.includes(this.$store.state.uid)) {
+      this.is_sub = true
+    } else {
+      this.is_sub = false
     }
-    // for (let i = 0; i < this.cafestore.subscriber.length; i++) {
-    //   if (this.cafestore.subscriber[i] === myuser.data.id) {
-    //     this.is_sub = true
-    //   } else {
-    //     this.is_sub = false
-    //   }
-    // }
+    console.log(this.is_sub)
   },
   methods: {
     async subscribe() {
@@ -128,10 +117,11 @@ export default {
             }
           }
         )
+        this.is_sub = true
+        this.$store.commit('AddSub', this.cafestore.subscriber.length)
       } catch (err) {
         // eslint-disable-next-line no-console
         console.log(err.request.response)
-        this.is_sub = true
       }
     },
     imgUrl(object) {
@@ -231,5 +221,13 @@ export default {
   align-items: center;
   font-size: 18px;
   padding: 2.5px;
+}
+.btn-sub {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.btn {
+  padding: 5px;
 }
 </style>
