@@ -31,8 +31,8 @@
             </nuxt-link>
           </div>
         </div>
-        <div class="col-3">
-          <div v-if="$store.state.token === null" class="nav-user">
+        <div class="col-4">
+          <div v-if="!this.$store.state.token" class="nav-user">
             <nuxt-link to="/login" tag="li" class="login nav-link">
               <a>Login</a>
             </nuxt-link>

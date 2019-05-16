@@ -64,6 +64,13 @@ export default {
         name: 'login',
         params: { redirect: this.$store.state.redirectUrl }
       })
+    } else if (
+      this.$store.state.token !== null &&
+      this.$store.state.role !== '2'
+    ) {
+      this.$router.push({
+        name: 'login'
+      })
     }
     // if (!localStorage.getItem('token')) {
     //   this.$router.push({

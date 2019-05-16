@@ -26,8 +26,8 @@
           >
             Subscribe +
           </button>
-          <button v-else type="button" class="btn btn-secondary disabled">
-            Subscribed
+          <button v-else type="button" class="btn btn-secondary" @click="unsub">
+            Unsubscribe
           </button>
         </div>
         <hr class="my-4" />
@@ -73,7 +73,7 @@ export default {
   },
   data() {
     return {
-      is_sub: false
+      is_sub: null
     }
   },
   async asyncData({ params, $axios, store }) {
@@ -97,7 +97,9 @@ export default {
   mounted() {
     this.$store.commit('GetSub', this.cafestore.subscriber.length)
     this.$store.commit('SetUrl', this.$route.path)
-    if (this.cafestore.subscriber.includes(this.$store.state.uid)) {
+    if (
+      this.cafestore.subscriber.includes(parseInt(localStorage.getItem('uid')))
+    ) {
       this.is_sub = true
     } else {
       this.is_sub = false
@@ -118,9 +120,27 @@ export default {
           }
         )
         this.is_sub = true
-        this.$store.commit('AddSub', this.cafestore.subscriber.length)
+        this.$store.commit('AddSub', this.$store.state.subscriber)
       } catch (err) {
         // eslint-disable-next-line no-console
+        console.log(err.request.response)
+      }
+    },
+    async unsub() {
+      try {
+        await this.$axios.delete(
+          `${this.$axios.defaults.baseURL}api/v1/subscribe/store/${
+            this.cafestore.id
+          }/`,
+          {
+            headers: {
+              Authorization: 'token' + this.$store.state.token
+            }
+          }
+        )
+        this.is_sub = false
+        this.$store.commit('DelSub', this.$store.state.subscriber)
+      } catch (err) {
         console.log(err.request.response)
       }
     },

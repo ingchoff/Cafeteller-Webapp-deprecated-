@@ -33,6 +33,10 @@ export const mutations = {
   },
   GetSub(state, sub) {
     state.subscriber = sub
+  },
+  DelSub(state, sub) {
+    state.subscriber = sub
+    state.subscriber = state.subscriber - 1
   }
 }
 
