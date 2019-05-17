@@ -25,7 +25,6 @@
               to="/chat"
               tag="li"
               class="nav-link"
-              @click.native="openChat"
             >
               <a>Let's Chat</a>
             </nuxt-link>

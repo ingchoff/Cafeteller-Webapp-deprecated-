@@ -16,13 +16,42 @@ export default {
     Header,
     Footer
   },
-  mounted() {
+  // async fetch({ store, params, $axios }) {
+  //   try {
+  //     const messages = await $axios.get(
+  //       `${$axios.defaults.baseURL}api/v1/chat/message/send/`,
+  //       {
+  //         headers: {
+  //           Authorization: 'token' + store.state.token
+  //         }
+  //       }
+  //     )
+  //     store.commit('SetMessage', messages)
+  //   } catch (err) {
+  //     console.log(err.request.response)
+  //   }
+  // },
+  async mounted() {
     this.$store.commit('SetUser', {
       id: localStorage.getItem('uid'),
       username: localStorage.getItem('user'),
       token: localStorage.getItem('token'),
       role: localStorage.getItem('role')
     })
+    try {
+      const messages = await this.$axios.get(
+        `${this.$axios.defaults.baseURL}api/v1/chat/message/send/`,
+        {
+          headers: {
+            Authorization: 'token' + this.$store.state.token
+          }
+        }
+      )
+      this.$store.commit('SetMessage', messages)
+    } catch (err) {
+      console.log(err.request.response)
+    }
+    console.log(this.$store.state.chatMessage)
     // this.$store.commit('SetUrl', this.$route.path)
   }
 }

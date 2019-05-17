@@ -91,6 +91,7 @@ export default {
         }
       }
       try {
+        console.log(localStorage.getItem('token'))
         const userrole = await this.$axios.get(
           `${this.$axios.defaults.baseURL}api/v1/myuser/`,
           {
@@ -99,7 +100,7 @@ export default {
             }
           }
         )
-        localStorage.setItem('user', userrole.data[0].username)
+        localStorage.setItem('user', this.username)
         localStorage.setItem('role', userrole.data[0].groups[0])
         localStorage.setItem('uid', userrole.data[0].id)
         console.log(userrole.data)

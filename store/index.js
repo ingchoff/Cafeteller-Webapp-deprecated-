@@ -3,7 +3,8 @@ export const state = () => ({
   username: null,
   token: null,
   role: null,
-  chatInfo: [],
+  chatInfo: null,
+  chatMessage: null,
   redirectUrl: '/',
   subscriber: 0
 })
@@ -37,6 +38,12 @@ export const mutations = {
   DelSub(state, sub) {
     state.subscriber = sub
     state.subscriber = state.subscriber - 1
+  },
+  SetMessage(state, message) {
+    state.chatMessage = message.data
+  },
+  AddMessage(state, message) {
+    state.chatMessage.push(message.data)
   }
 }
 
@@ -44,4 +51,15 @@ export const actions = {
   nuxtServerInit({ commit }, user) {
     commit('SetUser', user)
   }
+  // async GET_MESSAGE({ commit }, state) {
+  //   const { data } = await this.$axios.get(
+  //     `${this.$axios.defaults.baseURL}api/v1/chat/message/send/`,
+  //     {
+  //       headers: {
+  //         Authorization: 'token' + state.token
+  //       }
+  //     }
+  //   )
+  //   commit('SetMessage', data)
+  // }
 }
