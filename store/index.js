@@ -6,7 +6,8 @@ export const state = () => ({
   chatInfo: null,
   chatMessage: [],
   redirectUrl: '/',
-  subscriber: 0
+  subscriber: 0,
+  subChannel: null
 })
 
 export const mutations = {
@@ -46,6 +47,9 @@ export const mutations = {
   },
   AddMessage(state, message) {
     state.chatMessage.push(message)
+  },
+  SetSubChannel(state, channel) {
+    state.subChannel = channel
   }
 }
 

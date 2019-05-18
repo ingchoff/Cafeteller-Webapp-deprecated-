@@ -6,7 +6,12 @@
           <p>กล่องข้อความ</p>
         </div>
         <div class="content">
-          <a v-for="room in $store.state.chatInfo" :key="room.id">
+          <a
+            v-for="room in $store.state.chatInfo"
+            :key="room.id"
+            href="#"
+            @click="clickToChat(room.users)"
+          >
             <div class="content-list-item">
               <div class="content-list">
                 <span v-if="room.users[0] !== parseInt($store.state.uid)">{{
@@ -81,6 +86,7 @@ export default {
     return {
       text: '',
       currentMessage: [],
+      messages: [],
       sender: null,
       reciever: null
     }
@@ -95,6 +101,7 @@ export default {
           }
         }
       )
+      this.messages = messages.data
       for (let i = 0; i < messages.data.length; i++) {
         if (
           (messages.data[i].reciever === 4 && messages.data[i].sender === 3) ||
@@ -112,18 +119,33 @@ export default {
       cluster: 'mt1',
       forceTLS: true
     })
-    const channel = pusher.subscribe(this.$store.state.chatInfo[0].token) // eslint-disable-line no-undef
-    channel.bind('message-sending', data => {
-      this.$store.commit('AddMessage', data)
-      // if (this.$store.state.username.username !== data.name) {
-      //   this.$store.commit('addMessage', data)
-      // }
-    })
+    if (this.$store.state.subChannel !== this.$store.state.chatInfo[0].token) {
+      const channel = pusher.subscribe(this.$store.state.chatInfo[0].token)
+      this.$store.commit('SetSubChannel', this.$store.state.chatInfo[0].token)
+      channel.bind('message-sending', data => {
+        this.$store.commit('AddMessage', data)
+        // if (this.$store.state.username.username !== data.name) {
+        //   this.$store.commit('addMessage', data)
+        // }
+      })
+    }
   },
   methods: {
-    // clickToChat() {
-
-    // },
+    clickToChat(users) {
+      console.log(users)
+      this.currentMessage = []
+      for (let i = 0; i < this.messages.length; i++) {
+        if (
+          (this.messages[i].reciever === users[0] &&
+            this.messages[i].sender === users[1]) ||
+          (this.messages[i].reciever === users[1] &&
+            this.messages[i].sender === users[0])
+        ) {
+          this.currentMessage.push(this.messages[i])
+        }
+      }
+      this.$store.commit('SetMessage', this.currentMessage)
+    },
     async send() {
       console.log(this.$store.state.token)
       console.log(this.$store.state.uid)
