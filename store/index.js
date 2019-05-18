@@ -4,7 +4,7 @@ export const state = () => ({
   token: null,
   role: null,
   chatInfo: null,
-  chatMessage: null,
+  chatMessage: [],
   redirectUrl: '/',
   subscriber: 0
 })
@@ -21,6 +21,8 @@ export const mutations = {
     state.token = ''
     state.role = ''
     state.uid = ''
+    state.chatMessage = null
+    state.chatInfo = null
   },
   SetChat(state, chat) {
     state.chatInfo = chat
@@ -40,10 +42,10 @@ export const mutations = {
     state.subscriber = state.subscriber - 1
   },
   SetMessage(state, message) {
-    state.chatMessage = message.data
+    state.chatMessage = message
   },
   AddMessage(state, message) {
-    state.chatMessage.push(message.data)
+    state.chatMessage.push(message)
   }
 }
 

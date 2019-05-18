@@ -111,11 +111,24 @@ export default {
           role: localStorage.getItem('role')
         })
         this.$router.push(this.$store.state.redirectUrl)
-        // eslint-disable-next-line no-unreachable
       } catch (err) {
         // eslint-disable-next-line no-console
         console.log(err.request.response)
       }
+      // try {
+      //   const messages = await this.$axios.get(
+      //     `${this.$axios.defaults.baseURL}api/v1/chat/message/send/`,
+      //     {
+      //       headers: {
+      //         Authorization: 'token' + this.$store.state.token
+      //       }
+      //     }
+      //   )
+      //   this.$store.commit('SetMessage', messages)
+      // } catch (err) {
+      //   console.log('setmessage' + err.request.response)
+      // }
+      // eslint-disable-next-line no-unreachable
     }
   }
 }

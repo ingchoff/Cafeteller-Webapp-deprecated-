@@ -133,6 +133,7 @@ export default {
     // }
     this.$store.commit('SetUrl', this.$route.path)
     this.$store.commit('SetUser', {
+      id: localStorage.getItem('uid'),
       username: localStorage.getItem('user'),
       token: localStorage.getItem('token'),
       role: localStorage.getItem('role')

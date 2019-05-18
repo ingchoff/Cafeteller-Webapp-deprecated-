@@ -24,6 +24,9 @@ export default {
       {
         src:
           'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js'
+      },
+      {
+        src: 'https://js.pusher.com/4.4/pusher.min.js'
       }
     ],
     link: [

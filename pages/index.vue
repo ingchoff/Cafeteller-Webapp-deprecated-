@@ -56,11 +56,6 @@ export default {
   },
   async mounted() {
     this.$store.commit('SetUrl', this.$route.path)
-    for (let i = 0; i < this.cafestore.length; i++) {
-      this.cafename.push({
-        name: this.cafestore[i].name
-      })
-    }
     try {
       const chatToken = await this.$axios.get(
         `${this.$axios.defaults.baseURL}api/v1/get/token`,
@@ -71,10 +66,13 @@ export default {
         }
       )
       this.$store.commit('SetChat', chatToken.data)
-      // eslint-disable-next-line no-unreachable
     } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log(err.request.response)
+      console.log('chattoken' + err.request.response)
+    }
+    for (let i = 0; i < this.cafestore.length; i++) {
+      this.cafename.push({
+        name: this.cafestore[i].name
+      })
     }
   },
   methods: {
