@@ -131,8 +131,17 @@ export default {
     }
   },
   methods: {
-    clickToChat(users) {
+    async clickToChat(users) {
       console.log(users)
+      const messages = await this.$axios.get(
+        `${this.$axios.defaults.baseURL}api/v1/chat/message/send/`,
+        {
+          headers: {
+            Authorization: 'token' + this.$store.state.token
+          }
+        }
+      )
+      this.messages = messages.data
       this.currentMessage = []
       for (let i = 0; i < this.messages.length; i++) {
         if (
