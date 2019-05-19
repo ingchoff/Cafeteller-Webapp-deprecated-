@@ -7,10 +7,14 @@ export const state = () => ({
   chatMessage: [],
   redirectUrl: '/',
   subscriber: 0,
-  subChannel: null
+  subChannel: null,
+  recieverInit: null
 })
 
 export const mutations = {
+  SetReciever(state, user) {
+    state.recieverInit = user
+  },
   SetUser(state, user) {
     state.uid = user.id
     state.username = user.username

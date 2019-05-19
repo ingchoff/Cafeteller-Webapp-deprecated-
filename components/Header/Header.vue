@@ -8,12 +8,7 @@
       <div class="row">
         <div class="col">
           <div class="nav-links">
-            <nuxt-link
-              style="padding:0;"
-              to="/"
-              tag="li"
-              class="nav-link"
-              @click="toClose"
+            <nuxt-link style="padding:0;" to="/" tag="li" class="nav-link"
               ><a>Home</a></nuxt-link
             >
             <nuxt-link to="/reviews" tag="li" class="nav-link">
