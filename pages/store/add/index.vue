@@ -128,9 +128,6 @@ export default {
     }
   },
   mounted() {
-    // if (!localStorage.getItem('token')) {
-    //   this.$router.push({ path: '/login' })
-    // }
     this.$store.commit('SetUrl', this.$route.path)
     this.$store.commit('SetUser', {
       id: localStorage.getItem('uid'),
@@ -139,9 +136,21 @@ export default {
       role: localStorage.getItem('role')
     })
     if (!this.$store.state.token) {
+      localStorage.clear()
+      this.$store.commit('ClearUser')
       this.$router.push({
         name: 'login',
         params: { redirect: this.$store.state.redirectUrl }
+      })
+    } else if (
+      this.$store.state.token !== null &&
+      this.$store.state.role !== '2' &&
+      this.$store.state.role !== '1'
+    ) {
+      localStorage.clear()
+      this.$store.commit('ClearUser')
+      this.$router.push({
+        name: 'login'
       })
     }
     this.$refs.mymap.$mapPromise.then(map => {

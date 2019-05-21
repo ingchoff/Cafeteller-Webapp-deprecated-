@@ -3,11 +3,11 @@ export const state = () => ({
   username: null,
   token: null,
   role: null,
-  chatInfo: null,
+  chatInfo: [],
   chatMessage: [],
   redirectUrl: '/',
   subscriber: 0,
-  subChannel: null,
+  subChannel: [],
   recieverInit: null
 })
 
@@ -26,8 +26,11 @@ export const mutations = {
     state.token = ''
     state.role = ''
     state.uid = ''
-    state.chatMessage = null
-    state.chatInfo = null
+    state.chatMessage = []
+    state.chatInfo = []
+    state.subChannel = []
+    state.subscriber = 0
+    state.recieverInit = null
   },
   SetChat(state, chat) {
     state.chatInfo = chat
@@ -53,7 +56,7 @@ export const mutations = {
     state.chatMessage.push(message)
   },
   SetSubChannel(state, channel) {
-    state.subChannel = channel
+    state.subChannel.push(channel)
   }
 }
 

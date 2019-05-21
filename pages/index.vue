@@ -43,7 +43,8 @@ export default {
     return {
       kmInput: 1,
       value: null,
-      cafename: []
+      cafename: [],
+      cafeinfo: []
     }
   },
   async asyncData({ params, $axios }) {
@@ -56,24 +57,25 @@ export default {
   },
   async mounted() {
     this.$store.commit('SetUrl', this.$route.path)
-    try {
-      const chatToken = await this.$axios.get(
-        `${this.$axios.defaults.baseURL}api/v1/get/token`,
-        {
-          headers: {
-            Authorization: 'token' + localStorage.getItem('token')
-          }
-        }
-      )
-      this.$store.commit('SetChat', chatToken.data)
-    } catch (err) {
-      console.log('chattoken' + err.request.response)
-    }
     for (let i = 0; i < this.cafestore.length; i++) {
       this.cafename.push({
         name: this.cafestore[i].name
       })
     }
+    try {
+      const chatToken = await this.$axios.get(
+        `${this.$axios.defaults.baseURL}api/v1/get/token`,
+        {
+          headers: {
+            Authorization: 'token' + this.$store.state.token
+          }
+        }
+      )
+      this.cafeinfo = chatToken.data
+    } catch (err) {
+      console.log('chattoken' + err.request.response)
+    }
+    this.$store.commit('SetChat', this.cafeinfo)
   },
   methods: {
     filterCafeByPos() {

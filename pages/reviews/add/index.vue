@@ -65,6 +65,8 @@ export default {
         name: 'login',
         params: { redirect: this.$store.state.redirectUrl }
       })
+      this.$store.commit('ClearUser')
+      localStorage.clear()
     } else if (
       this.$store.state.token !== null &&
       this.$store.state.role !== '2'
@@ -72,6 +74,8 @@ export default {
       this.$router.push({
         name: 'login'
       })
+      this.$store.commit('ClearUser')
+      localStorage.clear()
     }
     // if (!localStorage.getItem('token')) {
     //   this.$router.push({

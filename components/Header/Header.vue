@@ -65,12 +65,15 @@ export default {
   },
   methods: {
     logout() {
+      Pusher.logToConsole = true // eslint-disable-line no-undef
+      let pusher = new Pusher('90b6e5d7cc2ac7bc480b', { // eslint-disable-line
+        cluster: 'mt1',
+        forceTLS: true
+      })
+      pusher.disconnect()
       // eslint-disable-next-line no-console
       localStorage.clear()
       this.$store.commit('ClearUser')
-      this.$router.push({
-        name: 'login'
-      })
     }
     // async openChat() {
     //   try {

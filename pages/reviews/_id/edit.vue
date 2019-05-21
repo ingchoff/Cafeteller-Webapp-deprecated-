@@ -68,6 +68,18 @@ export default {
         name: 'login',
         params: { redirect: this.$store.state.redirectUrl }
       })
+      localStorage.clear()
+      this.$store.commit('ClearUser')
+    } else if (
+      this.$store.state.token !== null &&
+      this.$store.state.role !== '2' &&
+      this.$store.state.role !== '1'
+    ) {
+      this.$router.push({
+        name: 'login'
+      })
+      localStorage.clear()
+      this.$store.commit('ClearUser')
     }
     // if (!localStorage.getItem('token')) {
     //   this.$router.push({ path: '/login' })

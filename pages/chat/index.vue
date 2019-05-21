@@ -12,7 +12,7 @@
               :key="room.id"
               class="links"
               to=""
-              @click.native="clickToChat(room.users)"
+              @click.native="clickToChat(room.users, index)"
             >
               <div class="content-list-item">
                 <div
@@ -77,81 +77,147 @@ export default {
       messages: [],
       sender: null,
       reciever: null,
+      recieverToName: null,
       recieverName: '',
       recieverNameInit: []
     }
   },
   async mounted() {
-    try {
-      const messages = await this.$axios.get(
-        `${this.$axios.defaults.baseURL}api/v1/chat/message/send/`,
-        {
-          headers: {
-            Authorization: 'token' + this.$store.state.token
+    this.$store.commit('SetUser', {
+      id: localStorage.getItem('uid'),
+      username: localStorage.getItem('user'),
+      token: localStorage.getItem('token'),
+      role: localStorage.getItem('role')
+    })
+    if (!this.$store.state.token) {
+      this.$router.push({
+        name: 'login',
+        params: { redirect: this.$store.state.redirectUrl }
+      })
+      this.$store.commit('ClearUser')
+      localStorage.clear()
+    } else if (
+      this.$store.state.token !== null &&
+      this.$store.state.role !== '2' &&
+      this.$store.state.role !== '1'
+    ) {
+      this.$router.push({
+        name: 'login'
+      })
+      this.$store.commit('ClearUser')
+      localStorage.clear()
+    }
+    if (this.$store.state.chatInfo.length > 0) {
+      try {
+        const messages = await this.$axios.get(
+          `${this.$axios.defaults.baseURL}api/v1/chat/message/send/`,
+          {
+            headers: {
+              Authorization: 'token' + this.$store.state.token
+            }
+          }
+        )
+        this.messages = messages.data
+        // กรอง message แสดงตาม ผู้ส่ง-ผู้รับตามห้อง
+        for (let i = 0; i < messages.data.length; i++) {
+          if (
+            (messages.data[i].reciever ===
+              this.$store.state.chatInfo[0].users[0] &&
+              messages.data[i].sender ===
+                this.$store.state.chatInfo[0].users[1]) ||
+            (messages.data[i].reciever ===
+              this.$store.state.chatInfo[0].users[1] &&
+              messages.data[i].sender ===
+                this.$store.state.chatInfo[0].users[0])
+          ) {
+            this.currentMessage.push(messages.data[i])
           }
         }
-      )
-      this.messages = messages.data
-      for (let i = 0; i < messages.data.length; i++) {
-        if (
-          (messages.data[i].reciever === 4 && messages.data[i].sender === 3) ||
-          (messages.data[i].reciever === 3 && messages.data[i].sender === 4)
-        ) {
-          this.currentMessage.push(messages.data[i])
-        }
+        this.$store.commit('SetMessage', this.currentMessage)
+      } catch (err) {
+        console.log('setmessage' + err.request.response)
       }
-      this.$store.commit('SetMessage', this.currentMessage)
-    } catch (err) {
-      console.log('setmessage' + err.request.response)
-    }
-    Pusher.logToConsole = true // eslint-disable-line no-undef
-    let pusher = new Pusher('90b6e5d7cc2ac7bc480b', { // eslint-disable-line
-      cluster: 'mt1',
-      forceTLS: true
-    })
-    if (this.$store.state.subChannel !== this.$store.state.chatInfo[0].token) {
-      const channel = pusher.subscribe(this.$store.state.chatInfo[0].token)
-      this.$store.commit('SetSubChannel', this.$store.state.chatInfo[0].token)
-      channel.bind('message-sending', data => {
-        this.$store.commit('AddMessage', data)
-        // if (this.$store.state.username.username !== data.name) {
-        //   this.$store.commit('addMessage', data)
-        // }
+      Pusher.logToConsole = true // eslint-disable-line no-undef
+      let pusher = new Pusher('90b6e5d7cc2ac7bc480b', { // eslint-disable-line
+        cluster: 'mt1',
+        forceTLS: true
       })
-    }
-    if (
-      this.$store.state.chatInfo[0].users[0] !== parseInt(this.$store.state.uid)
-    ) {
-      this.reciever = this.$store.state.chatInfo[0].users[0]
-    } else if (
-      this.$store.state.chatInfo[0].users[1] !== parseInt(this.$store.state.uid)
-    ) {
-      this.reciever = this.$store.state.chatInfo[0].users[1]
-    }
-    const recieverName = await this.$axios.get(
-      `${this.$axios.defaults.baseURL}api/v1/user/${this.reciever}/`
-    )
-    this.recieverName = recieverName.data.username
-    for (let i = 0; i < this.$store.state.chatInfo.length; i++) {
       if (
-        this.$store.state.chatInfo[i].users[0] !==
-        parseInt(this.$store.state.uid)
+        this.$store.state.subChannel.includes(
+          this.$store.state.chatInfo[0].token
+        ) === false
       ) {
-        this.reciever = this.$store.state.chatInfo[i].users[0]
-      } else if (
-        this.$store.state.chatInfo[i].users[1] !==
-        parseInt(this.$store.state.uid)
-      ) {
-        this.reciever = this.$store.state.chatInfo[i].users[1]
+        const channel = pusher.subscribe(this.$store.state.chatInfo[0].token)
+        this.$store.commit('SetSubChannel', this.$store.state.chatInfo[0].token)
+        channel.bind('message-sending', data => {
+          this.$store.commit('AddMessage', data)
+          // if (this.$store.state.username.username !== data.name) {
+          //   this.$store.commit('addMessage', data)
+          // }
+        })
       }
+      if (
+        this.$store.state.chatInfo[0].users[0] !==
+        parseInt(this.$store.state.uid)
+      ) {
+        this.reciever = this.$store.state.chatInfo[0].users[0]
+      } else if (
+        this.$store.state.chatInfo[0].users[1] !==
+        parseInt(this.$store.state.uid)
+      ) {
+        this.reciever = this.$store.state.chatInfo[0].users[1]
+      }
+      console.log(this.reciever)
       const recieverName = await this.$axios.get(
         `${this.$axios.defaults.baseURL}api/v1/user/${this.reciever}/`
       )
-      this.recieverNameInit.push(recieverName.data.username)
+      this.recieverName = recieverName.data.username
+      for (let i = 0; i < this.$store.state.chatInfo.length; i++) {
+        if (
+          this.$store.state.chatInfo[i].users[0] !==
+          parseInt(this.$store.state.uid)
+        ) {
+          this.recieverToName = this.$store.state.chatInfo[i].users[0]
+        } else if (
+          this.$store.state.chatInfo[i].users[1] !==
+          parseInt(this.$store.state.uid)
+        ) {
+          this.recieverToName = this.$store.state.chatInfo[i].users[1]
+        }
+        const recieverName = await this.$axios.get(
+          `${this.$axios.defaults.baseURL}api/v1/user/${this.recieverToName}/`
+        )
+        this.recieverNameInit.push(recieverName.data.username)
+      }
     }
   },
   methods: {
-    async clickToChat(users) {
+    async clickToChat(users, index) {
+      console.log(index)
+      Pusher.logToConsole = true // eslint-disable-line no-undef
+    let pusher = new Pusher('90b6e5d7cc2ac7bc480b', { // eslint-disable-line
+        cluster: 'mt1',
+        forceTLS: true
+      })
+      if (
+        this.$store.state.subChannel.includes(
+          this.$store.state.chatInfo[index].token
+        ) === false
+      ) {
+        const channel = pusher.subscribe(
+          this.$store.state.chatInfo[index].token
+        )
+        this.$store.commit(
+          'SetSubChannel',
+          this.$store.state.chatInfo[index].token
+        )
+        channel.bind('message-sending', data => {
+          this.$store.commit('AddMessage', data)
+          // if (this.$store.state.username.username !== data.name) {
+          //   this.$store.commit('addMessage', data)
+          // }
+        })
+      }
       if (users[0] !== parseInt(this.$store.state.uid)) {
         this.reciever = users[0]
       } else if (users[1] !== parseInt(this.$store.state.uid)) {
@@ -163,7 +229,6 @@ export default {
       )
       console.log(recieverName.data)
       this.recieverName = recieverName.data.username
-      // console.log(users)
       const messages = await this.$axios.get(
         `${this.$axios.defaults.baseURL}api/v1/chat/message/send/`,
         {
@@ -194,7 +259,7 @@ export default {
           `${this.$axios.defaults.baseURL}api/v1/chat/message/send/`,
           {
             message: this.text,
-            reciever: 3
+            reciever: this.reciever
           },
           {
             headers: {

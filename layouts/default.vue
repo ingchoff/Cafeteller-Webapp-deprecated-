@@ -16,6 +16,11 @@ export default {
     Header,
     Footer
   },
+  data() {
+    return {
+      cafeinfo: []
+    }
+  },
   mounted() {
     this.$store.commit('SetUser', {
       id: localStorage.getItem('uid'),
