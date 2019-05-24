@@ -35,7 +35,12 @@
             <nuxt-link to="/login" tag="li" class="login nav-link">
               <a>Login</a>
             </nuxt-link>
-            <nuxt-link to="/register" tag="li" class="register nav-link">
+            <nuxt-link
+              to="/register"
+              tag="li"
+              class="register nav-link"
+              @click="toRegister"
+            >
               <a>Register</a>
             </nuxt-link>
           </div>
@@ -64,6 +69,9 @@ export default {
     return {}
   },
   methods: {
+    toRegister() {
+      this.$router.push('register')
+    },
     logout() {
       Pusher.logToConsole = true // eslint-disable-line no-undef
       let pusher = new Pusher('90b6e5d7cc2ac7bc480b', { // eslint-disable-line
