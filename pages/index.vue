@@ -55,27 +55,27 @@ export default {
       cafestore: cafestore.data
     }
   },
-  async mounted() {
+  mounted() {
     this.$store.commit('SetUrl', this.$route.path)
     for (let i = 0; i < this.cafestore.length; i++) {
       if (this.cafestore[i].is_onStore) {
         this.cafename.push(this.cafestore[i])
       }
     }
-    try {
-      const chatToken = await this.$axios.get(
-        `${this.$axios.defaults.baseURL}api/v1/get/token`,
-        {
-          headers: {
-            Authorization: 'token' + this.$store.state.token
-          }
-        }
-      )
-      this.cafeinfo = chatToken.data
-    } catch (err) {
-      console.log('chattoken' + err.request.response)
-    }
-    this.$store.commit('SetChat', this.cafeinfo)
+    // try {
+    //   const chatToken = await this.$axios.get(
+    //     `${this.$axios.defaults.baseURL}api/v1/get/token/`,
+    //     {
+    //       headers: {
+    //         Authorization: 'token' + this.$store.state.token
+    //       }
+    //     }
+    //   )
+    //   this.cafeinfo = chatToken.data
+    // } catch (err) {
+    //   console.log('chattoken' + err.request.response)
+    // }
+    // this.$store.commit('SetChat', this.cafeinfo)
   },
   methods: {
     filterCafeByPos() {

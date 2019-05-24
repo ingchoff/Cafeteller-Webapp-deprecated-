@@ -21,13 +21,26 @@ export default {
       cafeinfo: []
     }
   },
-  mounted() {
+  async mounted() {
     this.$store.commit('SetUser', {
       id: localStorage.getItem('uid'),
       username: localStorage.getItem('user'),
       token: localStorage.getItem('token'),
       role: localStorage.getItem('role')
     })
+    try {
+      const chatToken = await this.$axios.get(
+        `${this.$axios.defaults.baseURL}api/v1/get/token/`,
+        {
+          headers: {
+            Authorization: 'token' + localStorage.getItem('token')
+          }
+        }
+      )
+      this.$store.commit('SetChat', chatToken.data)
+    } catch (err) {
+      console.log('chattoken' + err.request.response)
+    }
   }
 }
 </script>

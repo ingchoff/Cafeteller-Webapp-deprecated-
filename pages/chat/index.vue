@@ -6,7 +6,10 @@
           <div class="header">
             <p class="font-weight-bold">กล่องข้อความ</p>
           </div>
-          <div class="content list-group">
+          <div
+            v-if="$store.state.chatInfo.length !== 0"
+            class="content list-group"
+          >
             <nuxt-link
               v-for="(room, index) in $store.state.chatInfo"
               :key="room.id"
@@ -30,10 +33,28 @@
               </div>
             </nuxt-link>
           </div>
+          <div v-else class="content list-group">
+            <nuxt-link class="links" to="">
+              <div class="content-list-item">
+                <div
+                  class="col-sm-3 col-xs-3 sideBar-avatar d-flex justify-content-center"
+                >
+                  <div class="avatar-icon">
+                    <img src="~/assets/512.png" />
+                  </div>
+                </div>
+                <div
+                  class="col-sm-9 col-xs-9 sideBar-main d-flex justify-content-center"
+                >
+                  <span>{{ recieverNameInit[0] }}</span>
+                </div>
+              </div>
+            </nuxt-link>
+          </div>
         </div>
       </div>
       <div class="col-8">
-        <div class="row heading">{{ recieverName }}</div>
+        <div class="row heading">กำลังคุยกับ {{ recieverName }}</div>
         <div class="row message">
           <div
             v-for="i in $store.state.chatMessage"
@@ -79,7 +100,8 @@ export default {
       reciever: null,
       recieverToName: null,
       recieverName: '',
-      recieverNameInit: []
+      recieverNameInit: [],
+      cafeinfo: []
     }
   },
   async mounted() {
@@ -107,7 +129,20 @@ export default {
       this.$store.commit('ClearUser')
       localStorage.clear()
     }
-    if (this.$store.state.chatInfo.length > 0) {
+    try {
+      const chatToken = await this.$axios.get(
+        `${this.$axios.defaults.baseURL}api/v1/get/token/`,
+        {
+          headers: {
+            Authorization: 'token' + localStorage.getItem('token')
+          }
+        }
+      )
+      this.$store.commit('SetChat', chatToken.data)
+    } catch (err) {
+      console.log('chattoken' + err.request.response)
+    }
+    if (this.$store.state.chatInfo.length !== 0) {
       try {
         const messages = await this.$axios.get(
           `${this.$axios.defaults.baseURL}api/v1/chat/message/send/`,
@@ -118,7 +153,7 @@ export default {
           }
         )
         this.messages = messages.data
-        // กรอง message แสดงตาม ผู้ส่ง-ผู้รับตามห้อง
+        // กรอง message แสดงตาม ผู้ส่ง-ผู้รับตามห้อง initial เข้าหน้า chat ครั้งแรก
         for (let i = 0; i < messages.data.length; i++) {
           if (
             (messages.data[i].reciever ===
@@ -189,6 +224,10 @@ export default {
         )
         this.recieverNameInit.push(recieverName.data.username)
       }
+    } else {
+      this.reciever = 4
+      this.recieverName = 'reviewer'
+      this.recieverNameInit.push('reviewer')
     }
   },
   methods: {
@@ -224,6 +263,7 @@ export default {
         this.reciever = users[1]
       }
       console.log(this.reciever)
+      // หา ชื่อ ผู้รับข้อความ
       const recieverName = await this.$axios.get(
         `${this.$axios.defaults.baseURL}api/v1/user/${this.reciever}/`
       )
@@ -254,7 +294,7 @@ export default {
     async send() {
       console.log(this.$store.state.token)
       console.log(this.$store.state.uid)
-      try {
+      if (this.$store.state.chatInfo.length === 0) {
         await this.$axios.post(
           `${this.$axios.defaults.baseURL}api/v1/chat/message/send/`,
           {
@@ -267,10 +307,56 @@ export default {
             }
           }
         )
-        // this.$store.commit('AddMessage', sendMessage.data)
+        try {
+          const chatToken = await this.$axios.get(
+            `${this.$axios.defaults.baseURL}api/v1/get/token/`,
+            {
+              headers: {
+                Authorization: 'token' + localStorage.getItem('token')
+              }
+            }
+          )
+          this.$store.commit('SetChat', chatToken.data)
+        } catch (err) {
+          console.log('chattoken' + err.request.response)
+        }
+        Pusher.logToConsole = true // eslint-disable-line no-undef
+        let pusher = new Pusher('90b6e5d7cc2ac7bc480b', { // eslint-disable-line
+          cluster: 'mt1',
+          forceTLS: true
+        })
+        const channel = pusher.subscribe(this.$store.state.chatInfo[0].token)
+        this.$store.commit('SetSubChannel', this.$store.state.chatInfo[0].token)
+        channel.bind('message-sending', data => {
+          this.$store.commit('AddMessage', data)
+          // if (this.$store.state.username.username !== data.name) {
+          //   this.$store.commit('addMessage', data)
+          // }
+        })
+        this.$store.commit('AddMessage', {
+          message: this.text,
+          sender: parseInt(this.$store.state.uid)
+        })
         this.text = ''
-      } catch (err) {
-        console.log(err.request.response)
+      } else {
+        try {
+          await this.$axios.post(
+            `${this.$axios.defaults.baseURL}api/v1/chat/message/send/`,
+            {
+              message: this.text,
+              reciever: this.reciever
+            },
+            {
+              headers: {
+                Authorization: 'token' + this.$store.state.token
+              }
+            }
+          )
+          // this.$store.commit('AddMessage', sendMessage.data)
+          this.text = ''
+        } catch (err) {
+          console.log(err.request.response)
+        }
       }
     },
     isOwner(uid) {

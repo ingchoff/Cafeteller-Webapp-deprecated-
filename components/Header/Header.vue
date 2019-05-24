@@ -36,10 +36,11 @@
               <a>Login</a>
             </nuxt-link>
             <nuxt-link
+              v-if="!this.$store.state.token"
               to="/register"
               tag="li"
               class="register nav-link"
-              @click="toRegister"
+              @click.native="toRegister"
             >
               <a>Register</a>
             </nuxt-link>
@@ -70,6 +71,7 @@ export default {
   },
   methods: {
     toRegister() {
+      // console.log('okeyy')
       this.$router.push('register')
     },
     logout() {
@@ -83,6 +85,7 @@ export default {
       localStorage.clear()
       this.$store.commit('ClearUser')
       this.$router.push('login')
+      location.reload()
     }
     // async openChat() {
     //   try {
