@@ -62,7 +62,8 @@ export default {
       },
       markers: [],
       store: [],
-      errorMsg: null
+      errorMsg: null,
+      tempMarkers: []
     }
   },
   mounted() {
@@ -74,7 +75,7 @@ export default {
           this.myLat = position.coords.latitude
           this.myLng = position.coords.longitude
           await this.getCafePos()
-          await this.getCafeName()
+          // await this.getCafeName()
         })
       }
     })
@@ -87,15 +88,19 @@ export default {
             this.myLat
           }&lon=${this.myLng}&km=${this.km}`
         )
-        this.markers = cafestore.data.map(cafe => {
-          return {
-            id: cafe.id,
-            name: cafe.name,
-            position: { lat: cafe.latitude, lng: cafe.longitude }
-          }
-        })
+        this.markers = cafestore.data
+          .filter(cafe => {
+            return cafe.is_onStore === true
+          })
+          .map(cafe => {
+            return {
+              id: cafe.id,
+              name: cafe.name,
+              position: { lat: cafe.latitude, lng: cafe.longitude }
+            }
+          })
         // eslint-disable-next-line no-console
-        console.log('cafepos' + this.markers)
+        console.log('cafepos' + JSON.stringify(this.markers))
         this.$refs.gmap.$mapPromise.then(map => {
           if (this.markers.length === 0) {
             // eslint-disable-next-line no-undef
@@ -117,7 +122,6 @@ export default {
               bounds.extend(m.position)
             }
             map.fitBounds(bounds)
-            // map.setZoom(14)
           }
         })
       } catch (err) {
@@ -162,21 +166,6 @@ export default {
           })
         }
       }
-    },
-    arraysEqual(a, b) {
-      if (a === b) return true
-      if (a == null || b == null) return false
-      if (a.length !== b.length) return false
-
-      // If you don't care about the order of the elements inside
-      // the array, you should sort both arrays here.
-      // Please note that calling sort on an array will modify that array.
-      // you might want to clone your array first.
-
-      for (let i = 0; i < a.length; ++i) {
-        if (a[i] !== b[i]) return false
-      }
-      return true
     },
     toggleInfoWindow: function(marker, idx) {
       // this.center = marker.position
