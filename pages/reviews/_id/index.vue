@@ -16,10 +16,10 @@
       </div>
       <div v-html="rawContent"></div>
     </div>
-
-    <div class="row">
-      <div class="col">
-        <div class="card" style="width: 65%;">
+    <hr />
+    <div class="row mt-5">
+      <div class="col-5">
+        <div class="card" style="width: 75%;">
           <div class="card-body">
             <h5 class="card-title">
               <u>{{ cafestore.name }}</u>
@@ -54,8 +54,115 @@
           </div>
         </div>
       </div>
-      <div class="col">
-        <ThumbnailsImage />
+      <div class="col-7">
+        <ul
+          v-if="listcomment.length !== 0 && showMore === true"
+          class="list-group col-sm-11"
+        >
+          <li
+            v-for="comm in $store.state.totalcomment.slice(0, 10)"
+            :key="comm.id"
+            class="list-group-item"
+          >
+            {{ comm.content }}
+          </li>
+          <button
+            v-if="isMoreClick === false"
+            class="btn"
+            type="button"
+            data-toggle="collapse"
+            data-target="#collapseExample"
+            aria-expanded="false"
+            aria-controls="collapseExample"
+            @click="isMoreClick = true"
+          >
+            Show More...
+          </button>
+          <button
+            v-if="isMoreClick === true"
+            class="btn"
+            type="button"
+            data-toggle="collapse"
+            data-target="#collapseExample"
+            aria-expanded="false"
+            aria-controls="collapseExample"
+            @click="isMoreClick = false"
+          >
+            Show Less...
+          </button>
+          <li
+            v-for="comm in $store.state.totalcomment.slice(10)"
+            id="collapseExample"
+            :key="comm.id"
+            class="list-group-item collapse"
+          >
+            {{ comm.content }}
+          </li>
+        </ul>
+        <ul
+          v-if="listcomment.length !== 0 && showMore === false"
+          class="list-group col-sm-11"
+        >
+          <li
+            v-for="comm in $store.state.totalcomment"
+            :key="comm.id"
+            class="list-group-item"
+          >
+            {{ comm.content }}
+          </li>
+        </ul>
+        <ul v-if="listcomment.length === 0" class="list-group col-sm-11">
+          <li class="list-group-item">
+            No Comment.
+          </li>
+        </ul>
+        <form id="commentForm" class="form mt-4" role="form" @submit="onSubmit">
+          <div class="form-group">
+            <label for="email" class="col-sm-2 control-label">Comment</label>
+            <div v-if="$store.state.role === '3'" class="col-sm-11">
+              <textarea
+                id="addComment"
+                v-model="comment"
+                class="form-control"
+                rows="5"
+                placeholder="Write a comment"
+              ></textarea>
+            </div>
+            <div v-else class="col-sm-11">
+              <textarea
+                id="addComment"
+                v-model="comment"
+                class="form-control"
+                rows="5"
+                placeholder="Please, Login before comment"
+                disabled
+              ></textarea>
+            </div>
+          </div>
+          <div v-if="$store.state.role === '3'" class="form-group">
+            <div class="col-sm-offset-2 col-sm-12">
+              <button
+                id="submitComment"
+                class="btn btn-circle text-uppercase"
+                type="submit"
+              >
+                <span class="glyphicon glyphicon-send"></span> Submit comment
+              </button>
+            </div>
+          </div>
+          <div v-else class="form-group">
+            <div class="col-sm-offset-2 col-sm-12">
+              <button
+                id="submitComment"
+                class="btn btn-circle text-uppercase"
+                type="submit"
+                disabled
+              >
+                <span class="glyphicon glyphicon-send"></span> Submit comment
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -63,11 +170,19 @@
 
 <script>
 import GoogleMap from '@/components/Map-Store'
-import ThumbnailsImage from '@/components/CafeReview/ThumbnailsCarousel'
+// import ThumbnailsImage from '@/components/CafeReview/ThumbnailsCarousel'
 export default {
   components: {
-    ThumbnailsImage,
     GoogleMap
+  },
+  data() {
+    return {
+      comment: '',
+      listcomment: [],
+      lastcommentId: null,
+      showMore: false,
+      isMoreClick: false
+    }
   },
   computed: {
     storeUrl: function() {
@@ -138,10 +253,51 @@ export default {
       rawContent: rawContent
     }
   },
-  mounted() {
+  async mounted() {
     this.$store.commit('SetUrl', this.$route.path)
+    try {
+      const listComment = await this.$axios.get(
+        `${this.$axios.defaults.baseURL}api/v1/comments/`
+      )
+      this.listcomment = listComment.data.filter(comment => {
+        return comment.review === this.cafereviews.id
+      })
+      this.$store.commit('SetComment', this.listcomment)
+      this.lastcommentId = listComment.data[listComment.data.length - 1].id
+      if (this.$store.state.totalcomment.length > 10) {
+        this.showMore = true
+      }
+    } catch (err) {
+      console.log(err.request.response)
+    }
   },
   methods: {
+    onSubmit: async function(evt) {
+      evt.preventDefault()
+      try {
+        await this.$axios.post(
+          `${this.$axios.defaults.baseURL}api/v1/comments/`,
+          {
+            content: this.comment,
+            review: this.cafereviews.id
+          },
+          {
+            headers: {
+              Authorization: 'token' + this.$store.state.token
+            }
+          }
+        )
+        this.$store.commit('AddComment', {
+          id: this.lastcommentId + 1,
+          content: this.comment,
+          review: this.cafereviews.id
+        })
+        this.lastcommentId++
+        this.comment = ''
+      } catch (err) {
+        console.log(err.request.response)
+      }
+    },
     imgUrl(object) {
       if (object.type === 'fb') {
         return `<img
@@ -273,6 +429,25 @@ export default {
 .content p {
   padding: 20px 20px 0 20px;
   font-size: 20px;
+}
+
+#addComment {
+  width: 100%;
+}
+
+.list-group {
+  display: flex;
+}
+
+.list-group button {
+  width: 50%;
+  margin: 15px auto;
+  background: #fdfd96;
+  color: black;
+}
+
+#submitComment {
+  background-color: #f4a460;
 }
 
 @media (min-width: 1200px) {

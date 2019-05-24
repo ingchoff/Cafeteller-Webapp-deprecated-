@@ -74,6 +74,7 @@ export default {
       // eslint-disable-next-line no-console
       localStorage.clear()
       this.$store.commit('ClearUser')
+      this.$router.push('login')
     }
     // async openChat() {
     //   try {

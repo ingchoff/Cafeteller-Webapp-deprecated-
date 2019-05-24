@@ -8,10 +8,17 @@ export const state = () => ({
   redirectUrl: '/',
   subscriber: 0,
   subChannel: [],
-  recieverInit: null
+  recieverInit: null,
+  totalcomment: []
 })
 
 export const mutations = {
+  SetComment(state, comments) {
+    state.totalcomment = comments
+  },
+  AddComment(state, comments) {
+    state.totalcomment.push(comments)
+  },
   SetReciever(state, user) {
     state.recieverInit = user
   },
